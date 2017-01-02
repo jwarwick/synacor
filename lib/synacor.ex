@@ -2,6 +2,7 @@ defmodule Synacor do
   @moduledoc """
   Synacor Virtual Machine interpreter
   """
+  use GenServer
   alias Synacor.Token
   use Bitwise
 
@@ -15,25 +16,31 @@ defmodule Synacor do
   end
 
   @doc """
-  Execute the given file
+  Run the given executable file on the VM
   """
-  def execute_file(path) do
-    path
-    |> File.read!
-    |> execute
+  def start_link(path) do
+    GenServer.start_link(__MODULE__, %{path: path}, name: __MODULE__)
   end
 
   @doc """
   Give input to the engine
   """
   def input(str) do
+    GenServer.cast(__MODULE__, {:input, str})
   end
 
-  @doc """
-  Execute the given binary instructions
-  """
-  def execute(bin) do
-    run(%State{instructions: bin})
+  def init(%{path: path}) do
+    bin = File.read!(path)
+    {:ok, %State{instructions: bin}, 0}
+  end
+
+
+  def handle_info(:timeout, state) do
+    run(state)
+  end
+
+  def handle_cast({:input, str}, state) do
+    {:noreply, %State{state | input: str <> "\n"}, 0}
   end
 
   defp run(state = %State{halt: true}) do
@@ -43,7 +50,7 @@ defmodule Synacor do
     i = Token.analyze_one(pc, instructions)
     # IO.puts "#{inspect pc}: #{inspect i}"
     new_state = step(i, state)
-    run(new_state)
+    {:noreply, new_state, 0}
   end
 
   defp step({:noop}, state) do
@@ -54,6 +61,14 @@ defmodule Synacor do
     |> List.wrap
     |> IO.write
     increment_pc(state, 2)
+  end
+  defp step({:in, _reg}, state = %State{input: ""}) do
+    state
+  end
+  defp step({:in, {:reg, r}}, state = %State{input: <<char, rest::binary>>}) do
+    %State{state | input: rest}
+    |> set_register(r, {:value, char})
+    |> increment_pc(2)
   end
   defp step({:add, {:reg, r}, b, c}, state) do
     b = get_value(b, state)
