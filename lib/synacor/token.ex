@@ -4,11 +4,45 @@ defmodule Synacor.Token do
   """
 
   @doc """
+  Get the value at the given memory address
+  """
+  def get_value(offset, bin) do
+    skip = offset * 2
+    <<_skip::binary-size(skip), value::little-integer-size(16), _rest::binary>> = bin
+    value
+  end
+
+  @doc """
+  Put the value at the given memory address
+  """
+  def put_value(value, offset, bin) do
+    skip = offset * 2
+    <<skip::binary-size(skip), _old::little-integer-size(16), rest::binary>> = bin
+    skip <> <<value::little-integer-size(16)>> <> rest
+  end
+
+  @doc """
+  Parse the instruction at the given offset
+  """
+  def analyze_one(offset, bin) do
+    skip = offset * 2
+    <<_skip::binary-size(skip), rest::binary>> = bin
+    {op, _rest} = next_token(rest)
+    op
+  end
+
+  @doc """
   Generate a list of instructions from a binary
   """
   def analyze(bin) do
     bin
-    |> next_token([])
+    |> analyze([])
+  end
+
+  defp analyze(<<>>, acc), do: Enum.reverse(acc)
+  defp analyze(bin, acc) do
+    {op, rest} = next_token(bin)
+    analyze(rest, [op | acc])
   end
 
   # {opcode_name, opcode_value, number of args} 
@@ -37,20 +71,20 @@ defmodule Synacor.Token do
     {:noop, 21, 0}
     ]
 
-  defp next_token(<<>>, acc), do: Enum.reverse(acc)
-
   for {name, value, args} <- @opcodes do
     IO.puts "Adding #{inspect name}: #{inspect value}"
-    defp next_token(<<unquote(value)::little-integer-size(16), rest::binary>>, acc) do
-      IO.puts "Parsed: #{inspect unquote(name)}, #{inspect unquote(value)}, #{inspect unquote(args)}"
-      {op, rest} = take_args(unquote(name), unquote(args), rest)
-      next_token(rest, [op | acc])
+    defp next_token(<<unquote(value)::little-integer-size(16), rest::binary>>) do
+      # IO.puts "Parsed: #{inspect unquote(name)}, #{inspect unquote(value)}, #{inspect unquote(args)}"
+      take_args(unquote(name), unquote(args), rest)
     end
   end
 
-  defp next_token(<<value::little-integer-size(16), rest::binary>>, acc) do
-    # IO.puts "Unknown opcode: #{inspect value}"
-    next_token(rest, [{:unknown, value} | acc])
+  defp next_token(<<value::little-integer-size(16), rest::binary>>) do
+    IO.puts "Unknown opcode: #{inspect value}"
+    {{:unknown, value}, rest}
+  end
+  defp next_token(<<>>) do
+    {{:end_of_stream}, <<>>}
   end
 
   defp take_args(name, 0, rest), do: {{name}, rest}
