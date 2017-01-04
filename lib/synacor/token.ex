@@ -32,6 +32,26 @@ defmodule Synacor.Token do
   end
 
   @doc """
+  Write chars found in output instructions in a file
+  """
+  def strings(path) do
+    path
+    |> analyze_file
+    |> Enum.filter(&is_out/1)
+    |> Enum.each(&write_out/1)
+    |> IO.inspect
+  end
+
+  @doc """
+  Generate a list of instructions from a file
+  """
+  def analyze_file(path) do
+    path
+    |> File.read!
+    |> analyze
+  end
+
+  @doc """
   Generate a list of instructions from a binary
   """
   def analyze(bin) do
@@ -83,6 +103,10 @@ defmodule Synacor.Token do
     IO.puts "Unknown opcode: #{inspect value}"
     {{:unknown, value}, rest}
   end
+  defp next_token(<<value, rest::binary>>) do
+    IO.puts "Unknown single byte: #{inspect value}"
+    {{:unknown_byte, value}, rest}
+  end
   defp next_token(<<>>) do
     {{:end_of_stream}, <<>>}
   end
@@ -94,4 +118,16 @@ defmodule Synacor.Token do
 
   defp value(v) when v <= 32767, do: {:value, v}
   defp value(v) when v >= 32768 and v <= 32775, do: {:reg, v - 32768}
+
+  defp is_out({:out, _val}), do: true
+  defp is_out({:unknown, _val}), do: true
+  defp is_out(_), do: false
+
+  defp write_out({:out, {:value, val}}), do: val |> List.wrap |> IO.write
+  defp write_out({:out, {:reg, _val}}), do: :ok
+  defp write_out({:unknown, val}) do
+    if String.printable?(to_string([val])) do
+      val |> List.wrap |> IO.write
+    end
+  end
 end
