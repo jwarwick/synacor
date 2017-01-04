@@ -12,14 +12,15 @@ defmodule Synacor do
               registers: [0, 0, 0, 0, 0, 0, 0, 0],
               stack: [],
               input: "",
-              halt: false
+              halt: false,
+              terminal: nil
   end
 
   @doc """
   Run the given executable file on the VM
   """
-  def start_link(path) do
-    GenServer.start_link(__MODULE__, %{path: path}, name: __MODULE__)
+  def start_link(path, terminal \\ nil) do
+    GenServer.start_link(__MODULE__, %{path: path, terminal: terminal}, name: __MODULE__)
   end
 
   @doc """
@@ -29,9 +30,16 @@ defmodule Synacor do
     GenServer.cast(__MODULE__, {:input, str})
   end
 
-  def init(%{path: path}) do
+  @doc """
+  Shutdown the VM
+  """
+  def shutdown(reason \\ :normal) do
+    GenServer.stop(__MODULE__, reason)
+  end
+
+  def init(%{path: path, terminal: terminal}) do
     bin = File.read!(path)
-    {:ok, %State{instructions: bin}, 0}
+    {:ok, %State{instructions: bin, terminal: terminal}, 0}
   end
 
 
@@ -57,9 +65,8 @@ defmodule Synacor do
     increment_pc(state, 1)
   end
   defp step({:out, val}, state) do
-    get_value(val, state)
-    |> List.wrap
-    |> IO.write
+    val = get_value(val, state)
+    write_output(val, state)
     increment_pc(state, 2)
   end
   defp step({:in, _reg}, state = %State{input: ""}) do
@@ -238,4 +245,13 @@ defmodule Synacor do
 
   defp flip_bit(1), do: <<0::size(1)>>
   defp flip_bit(0), do: <<1::size(1)>>
+
+  defp write_output(val, %State{terminal: nil}) do
+    val
+    |> List.wrap
+    |> IO.write
+  end
+  defp write_output(val, %State{terminal: terminal}) do
+    send(terminal, {:output, val})
+  end
 end
