@@ -32,14 +32,17 @@ defmodule Synacor.Token do
   end
 
   @doc """
-  Write chars found in output instructions in a file
+  Convert a binary file to assembly
   """
-  def strings(path) do
-    path
-    |> analyze_file
-    |> Enum.filter(&is_out/1)
-    |> Enum.each(&write_out/1)
-    |> IO.inspect
+  def disassemble(input_path, output_path) do
+    result = input_path
+    |> File.read!
+    |> analyze
+    |> Enum.reduce([], &merge_outs/2)
+    |> Enum.reverse
+    |> Enum.map(&op_to_string/1)
+
+    File.write!(output_path, result)
   end
 
   @doc """
@@ -56,13 +59,17 @@ defmodule Synacor.Token do
   """
   def analyze(bin) do
     bin
-    |> analyze([])
+    |> analyze(0, [])
   end
 
-  defp analyze(<<>>, acc), do: Enum.reverse(acc)
-  defp analyze(bin, acc) do
+  defp analyze(<<>>, _pc, acc), do: Enum.reverse(acc)
+  defp analyze(bin, pc,  acc) do
     {op, rest} = next_token(bin)
-    analyze(rest, [op | acc])
+    inc = case op do
+      {:unknown, _} -> 1
+      value -> tuple_size(value)
+    end
+    analyze(rest, pc + inc, [{pc, op} | acc])
   end
 
   # {opcode_name, opcode_value, number of args} 
@@ -119,15 +126,19 @@ defmodule Synacor.Token do
   defp value(v) when v <= 32767, do: {:value, v}
   defp value(v) when v >= 32768 and v <= 32775, do: {:reg, v - 32768}
 
-  defp is_out({:out, _val}), do: true
-  defp is_out({:unknown, _val}), do: true
-  defp is_out(_), do: false
+  defp merge_outs({line, {:out, {:value, ?\n}}}, acc) do
+    [{line, {:out_newline, {:value, :newline}}} | acc]
+  end
+  defp merge_outs({_line, {:out, {:value, x}}}, [{line, {:out, {:value, y}}} | rest]) do
+    [{line, {:out, {:value, y ++ [x]}}} | rest]
+  end
+  defp merge_outs({line, {:out, {:value, x}}}, acc) do
+    [{line, {:out, {:value, [x]}}} | acc]
+  end
+  defp merge_outs(op, acc), do: [op | acc]
 
-  defp write_out({:out, {:value, val}}), do: val |> List.wrap |> IO.write
-  defp write_out({:out, {:reg, _val}}), do: :ok
-  defp write_out({:unknown, val}) do
-    if String.printable?(to_string([val])) do
-      val |> List.wrap |> IO.write
-    end
+  defp op_to_string({line, op}) do
+    line_num = line |> Integer.to_string |> String.pad_leading(5, "0")
+    "[#{line_num}]  #{inspect op}\n"
   end
 end
