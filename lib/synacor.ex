@@ -16,6 +16,9 @@ defmodule Synacor do
               terminal: nil
   end
 
+  ## API
+  ##
+
   @doc """
   Run the given executable file on the VM
   """
@@ -37,6 +40,59 @@ defmodule Synacor do
     GenServer.stop(__MODULE__, reason)
   end
 
+  @doc """
+  Get VM state
+  """
+  def state do
+    GenServer.call(__MODULE__, {:get_state})
+  end
+
+  @doc """
+  Set the VM state
+  """
+  def set_state(state) do
+    GenServer.cast(__MODULE__, {:set_state, state})
+  end
+
+  @doc """
+  Get registers
+  """
+  def registers, do: state().registers
+
+  @doc """
+  Set register
+  """
+  def set_register(index, value) do
+    state = state()
+    registers = List.replace_at(state.registers, index, value)
+    set_state(%State{state | registers: registers})
+  end
+
+  @doc """
+  Get the stack
+  """
+  def stack, do: state().stack
+
+  @doc """
+  Get a memory location
+  """
+  def peek(address) do
+    instructions = state().instructions
+    Token.get_value(address, instructions)
+  end
+
+  @doc """
+  Set a memory location
+  """
+  def poke(address, value) do
+    state = state()
+    instructions = Token.put_value(value, address, state.instructions)
+    set_state(%State{state | instructions: instructions})
+  end
+
+  ## Implementation
+  ##
+
   def init(%{path: path, terminal: terminal}) do
     bin = File.read!(path)
     {:ok, %State{instructions: bin, terminal: terminal}, 0}
@@ -49,6 +105,13 @@ defmodule Synacor do
 
   def handle_cast({:input, str}, state) do
     {:noreply, %State{state | input: str <> "\n"}, 0}
+  end
+  def handle_cast({:set_state, new_state}, _state) do
+    {:noreply, new_state, 0}
+  end
+
+  def handle_call({:get_state}, _from, state) do
+    {:reply, state, state, 0}
   end
 
   defp run(state = %State{halt: true}) do
