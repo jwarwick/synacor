@@ -24,8 +24,8 @@ defmodule Synacor do
   @doc """
   Run the given executable file on the VM
   """
-  def start_link(path, terminal \\ nil) do
-    GenServer.start_link(__MODULE__, %{path: path, terminal: terminal}, name: __MODULE__)
+  def start_link(path, terminal \\ nil, mode \\ :run) do
+    GenServer.start_link(__MODULE__, %{path: path, terminal: terminal, mode: mode}, name: __MODULE__)
   end
 
   @doc """
@@ -141,9 +141,9 @@ defmodule Synacor do
   ## Implementation
   ##
 
-  def init(%{path: path, terminal: terminal}) do
+  def init(%{path: path, terminal: terminal, mode: mode}) do
     bin = File.read!(path)
-    {:ok, %State{instructions: bin, terminal: terminal}, 0}
+    {:ok, %State{instructions: bin, terminal: terminal, mode: mode}, 0}
   end
 
 
@@ -186,7 +186,7 @@ defmodule Synacor do
     if Enum.member?(state.breakpoints, pc) do
       IO.puts "#{IO.ANSI.red()} Hit Breakpoint @ #{inspect pc} #{IO.ANSI.normal()}"
       i = Token.get_instruction(pc, state.instructions)
-    IO.puts "#{IO.ANSI.cyan()} #{inspect pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect state.registers}#{IO.ANSI.normal()}"
+    IO.puts "#{IO.ANSI.cyan()} #{inspect pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect state.registers}#{IO.ANSI.reset()}"
       {:noreply, %State{state | mode: :step}}
     else
       {new_state, new_pc} = one_step(state)
@@ -197,7 +197,7 @@ defmodule Synacor do
   defp step(state) do
     {new_state, new_pc} = one_step(state)
     i = Token.get_instruction(new_pc, state.instructions)
-    IO.puts "#{IO.ANSI.cyan()} #{inspect new_pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect state.registers}#{IO.ANSI.normal()}"
+    IO.puts "#{IO.ANSI.cyan()} #{inspect new_pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect state.registers}#{IO.ANSI.reset()}"
     {:noreply, %State{new_state | pc: new_pc}}
   end
 
