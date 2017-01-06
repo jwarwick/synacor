@@ -43,6 +43,24 @@ defmodule Synacor do
   end
 
   @doc """
+  Save the current state to a file
+  """
+  def save(path) do
+    bin = state() |> :erlang.term_to_binary()
+    File.write!(path, bin)
+  end
+
+  @doc """
+  Load a file as the current state.
+  Puts the VM into :step mode
+  """
+  def load(path) do
+    bin = File.read!(path)
+    state = :erlang.binary_to_term(bin)
+    set_state(%State{state | mode: :step})
+  end
+
+  @doc """
   Evaluate an instruction in the current state
   Does *not* update the program counter
   """
