@@ -13,7 +13,9 @@ defmodule Synacor do
               stack: [],
               input: "",
               halt: false,
-              terminal: nil
+              terminal: nil,
+              mode: :run,
+              breakpoints: []
   end
 
   ## API
@@ -98,6 +100,44 @@ defmodule Synacor do
     set_state(%State{state | instructions: instructions})
   end
 
+  @doc """
+  Continue running a stepped VM
+  """
+  def continue do
+    GenServer.cast(__MODULE__, {:continue})
+  end
+
+  @doc """
+  Put VM into step mode
+  """
+  def break do
+    GenServer.cast(__MODULE__, {:break})
+  end
+
+  @doc """
+  Step forward one instruction
+  """
+  def step do
+    GenServer.cast(__MODULE__, {:step})
+  end
+
+  @doc """
+  Add a breakpoint
+  """
+  def add_break(addr) do
+    state = state()
+    breaks = List.insert_at(state.breakpoints, 0, addr)
+    set_state(%State{state | breakpoints: breaks})
+  end
+
+  @doc """
+  Clear all breakpoints
+  """
+  def clear_break do
+    state = state()
+    set_state(%State{state | breakpoints: []})
+  end
+
   ## Implementation
   ##
 
@@ -107,8 +147,11 @@ defmodule Synacor do
   end
 
 
-  def handle_info(:timeout, state) do
+  def handle_info(:timeout, state = %State{mode: :run}) do
     run(state)
+  end
+  def handle_info(:timeout, state = %State{mode: :step}) do
+    {:noreply, state}
   end
 
   def handle_cast({:input, str}, state) do
@@ -121,6 +164,16 @@ defmodule Synacor do
     {new_state, _new_pc} = evaluate(instruction, state)
     {:noreply, new_state, 0}
   end
+  def handle_cast({:continue}, state) do
+    {new_state, new_pc} = one_step(state)
+    {:noreply, %State{new_state | pc: new_pc, mode: :run}, 0}
+  end
+  def handle_cast({:step}, state) do
+    step(state)
+  end
+  def handle_cast({:break}, state) do
+    {:noreply, %State{state | mode: :step}, 0}
+  end
 
   def handle_call({:get_state}, _from, state) do
     {:reply, state, state, 0}
@@ -129,11 +182,32 @@ defmodule Synacor do
   defp run(state = %State{halt: true}) do
     {:noreply, state}
   end
-  defp run(state = %State{pc: pc, instructions: instructions}) do
+  defp run(state = %State{pc: pc}) do
+    if Enum.member?(state.breakpoints, pc) do
+      IO.puts "#{IO.ANSI.red()} Hit Breakpoint @ #{inspect pc} #{IO.ANSI.normal()}"
+      i = Token.get_instruction(pc, state.instructions)
+    IO.puts "#{IO.ANSI.cyan()} #{inspect pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect state.registers}#{IO.ANSI.normal()}"
+      {:noreply, %State{state | mode: :step}}
+    else
+      {new_state, new_pc} = one_step(state)
+      {:noreply, %State{new_state | pc: new_pc}, 0}
+    end
+  end
+
+  defp step(state) do
+    {new_state, new_pc} = one_step(state)
+    i = Token.get_instruction(new_pc, state.instructions)
+    IO.puts "#{IO.ANSI.cyan()} #{inspect new_pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect state.registers}#{IO.ANSI.normal()}"
+    {:noreply, %State{new_state | pc: new_pc}}
+  end
+
+  defp one_step(state = %State{halt: true}) do
+    {state, state.pc}
+  end
+  defp one_step(state = %State{pc: pc, instructions: instructions}) do
     i = Token.get_instruction(pc, instructions)
     # IO.puts "#{inspect pc}: #{inspect i}, reg: #{inspect state.registers}"
-    {new_state, new_pc} = evaluate(i, state)
-    {:noreply, %State{new_state | pc: new_pc}, 0}
+    evaluate(i, state)
   end
 
   # NOTE: evaluate does *not* update the PC in the state
