@@ -24,7 +24,7 @@ defmodule Synacor.Token do
   @doc """
   Parse the instruction at the given offset
   """
-  def analyze_one(offset, bin) do
+  def get_instruction(offset, bin) do
     skip = offset * 2
     <<_skip::binary-size(skip), rest::binary>> = bin
     {op, _rest} = next_token(rest)

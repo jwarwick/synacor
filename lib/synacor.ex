@@ -41,6 +41,14 @@ defmodule Synacor do
   end
 
   @doc """
+  Evaluate an instruction in the current state
+  Does *not* update the program counter
+  """
+  def evaluate(instruction) do
+    GenServer.cast(__MODULE__, {:evaluate, instruction})
+  end
+
+  @doc """
   Get VM state
   """
   def state do
@@ -109,59 +117,66 @@ defmodule Synacor do
   def handle_cast({:set_state, new_state}, _state) do
     {:noreply, new_state, 0}
   end
+  def handle_cast({:evaluate, instruction}, state) do
+    {new_state, _new_pc} = evaluate(instruction, state)
+    {:noreply, new_state, 0}
+  end
 
   def handle_call({:get_state}, _from, state) do
     {:reply, state, state, 0}
   end
 
   defp run(state = %State{halt: true}) do
-    state
+    {:noreply, state}
   end
   defp run(state = %State{pc: pc, instructions: instructions}) do
-    i = Token.analyze_one(pc, instructions)
-    # IO.puts "#{inspect pc}: #{inspect i}"
-    new_state = step(i, state)
-    {:noreply, new_state, 0}
+    i = Token.get_instruction(pc, instructions)
+    # IO.puts "#{inspect pc}: #{inspect i}, reg: #{inspect state.registers}"
+    {new_state, new_pc} = evaluate(i, state)
+    {:noreply, %State{new_state | pc: new_pc}, 0}
   end
 
-  defp step({:noop}, state) do
-    increment_pc(state, 1)
+  # NOTE: evaluate does *not* update the PC in the state
+  # It passes the new PC in the returned tuple
+
+  defp evaluate({:noop}, state) do
+    {state, state.pc + 1}
   end
-  defp step({:out, val}, state) do
+  defp evaluate({:out, val}, state) do
     val = get_value(val, state)
     write_output(val, state)
-    increment_pc(state, 2)
+    {state, state.pc + 2}
   end
-  defp step({:in, _reg}, state = %State{input: ""}) do
-    state
+  defp evaluate({:in, _reg}, state = %State{input: ""}) do
+    {state, state.pc}
   end
-  defp step({:in, {:reg, r}}, state = %State{input: <<char, rest::binary>>}) do
-    %State{state | input: rest}
+  defp evaluate({:in, {:reg, r}}, state = %State{input: <<char, rest::binary>>}) do
+    state = %State{state | input: rest}
     |> set_register(r, {:value, char})
-    |> increment_pc(2)
+    {state, state.pc + 2}
   end
-  defp step({:add, {:reg, r}, b, c}, state) do
+  defp evaluate({:add, {:reg, r}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     sum = Integer.mod(b + c, 32768)
     state = set_register(state, r, {:value, sum})
-    increment_pc(state, 4)
+    {state, state.pc + 4}
   end
-  defp step({:mult, {:reg, r}, b, c}, state) do
+  defp evaluate({:mult, {:reg, r}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     mult = Integer.mod(b * c, 32768)
     state = set_register(state, r, {:value, mult})
-    increment_pc(state, 4)
+    {state, state.pc + 4}
   end
-  defp step({:mod, {:reg, r}, b, c}, state) do
+  defp evaluate({:mod, {:reg, r}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     d = Integer.mod(rem(b, c), 32768)
     state = set_register(state, r, {:value, d})
-    increment_pc(state, 4)
+    {state, state.pc + 4}
   end
-  defp step({:eq, {:reg, reg}, b, c}, state) do
+  defp evaluate({:eq, {:reg, reg}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     eq = if b == c do
@@ -170,9 +185,9 @@ defmodule Synacor do
       0
     end
     state = set_register(state, reg, {:value, eq})
-    increment_pc(state, 4)
+    {state, state.pc + 4}
   end
-  defp step({:gt, {:reg, reg}, b, c}, state) do
+  defp evaluate({:gt, {:reg, reg}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     val = if b > c do
@@ -181,103 +196,88 @@ defmodule Synacor do
       0
     end
     state = set_register(state, reg, {:value, val})
-    increment_pc(state, 4)
+    {state, state.pc + 4}
   end
-  defp step({:and, {:reg, reg}, b, c}, state) do
+  defp evaluate({:and, {:reg, reg}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
-    state
-    |> set_register(reg, {:value, band(b,c)})
-    |> increment_pc(4)
+    state = set_register(state, reg, {:value, band(b,c)})
+    {state, state.pc + 4}
   end
-  defp step({:or, {:reg, reg}, b, c}, state) do
+  defp evaluate({:or, {:reg, reg}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
-    state
-    |> set_register(reg, {:value, bor(b,c)})
-    |> increment_pc(4)
+    state = set_register(state, reg, {:value, bor(b,c)})
+    {state, state.pc + 4}
   end
-  defp step({:not, {:reg, reg}, b}, state) do
+  defp evaluate({:not, {:reg, reg}, b}, state) do
     b = get_value(b, state)
     bn = flip_bits(b)
-    state
-    |> set_register(reg, {:value, bn})
-    |> increment_pc(3)
+    state = set_register(state, reg, {:value, bn})
+    {state, state.pc + 3}
   end
-  defp step({:push, reg}, state = %State{stack: stack}) do
+  defp evaluate({:push, reg}, state = %State{stack: stack}) do
     value = get_value(reg, state)
     new_stack = List.insert_at(stack, 0, value)
-    %State{state | stack: new_stack}
-    |> increment_pc(2)
+    state = %State{state | stack: new_stack}
+    {state, state.pc + 2}
   end
-  defp step({:pop, {:reg, reg}}, state) do
+  defp evaluate({:pop, {:reg, reg}}, state) do
     {value, state} = pop_stack(state)
-    state
-    |> set_register(reg, {:value, value})
-    |> increment_pc(2)
+    state = set_register(state, reg, {:value, value})
+    {state, state.pc + 2}
   end
-  defp step({:rmem, {:reg, reg}, b}, state = %State{instructions: instructions}) do
+  defp evaluate({:rmem, {:reg, reg}, b}, state = %State{instructions: instructions}) do
     addr = get_value(b, state)
     value = Token.get_value(addr, instructions)
-    state
-    |> set_register(reg, {:value, value})
-    |> increment_pc(3)
+    state = set_register(state, reg, {:value, value})
+    {state, state.pc + 3}
   end
-  defp step({:wmem, addr, value}, state = %State{instructions: instructions}) do
+  defp evaluate({:wmem, addr, value}, state = %State{instructions: instructions}) do
     val = get_value(value, state)
     offset = get_value(addr, state)
     new_instructions = Token.put_value(val, offset, instructions)
-    %State{state | instructions: new_instructions}
-    |> increment_pc(3)
+    state = %State{state | instructions: new_instructions}
+    {state, state.pc + 3}
   end
-  defp step({:set, {:reg, reg}, val}, state) do
-    state
-    |> set_register(reg, val)
-    |> increment_pc(3)
+  defp evaluate({:set, {:reg, reg}, val}, state) do
+    state = set_register(state, reg, val)
+    {state, state.pc + 3}
   end
-  defp step({:jmp, val}, state) do
-    jump_pc(state, val)
+  defp evaluate({:jmp, val}, state) do
+    value = get_value(val, state)
+    {state, value}
   end
-  defp step({:jt, test, target}, state) do
+  defp evaluate({:jt, test, target}, state) do
     value = get_value(test, state)
     if value != 0 do
-      jump_pc(state, target)
+      {state, get_value(target, state)}
     else
-      increment_pc(state, 3)
+      {state, state.pc + 3}
     end
   end
-  defp step({:jf, test, target}, state) do
+  defp evaluate({:jf, test, target}, state) do
     value = get_value(test, state)
     if value == 0 do
-      jump_pc(state, target)
+      {state, get_value(target, state)}
     else
-      increment_pc(state, 3)
+      {state, state.pc + 3}
     end
   end
-  defp step({:call, next}, state = %State{pc: pc}) do
-    state
-    |> push_stack({:value, pc+2})
-    |> jump_pc(next)
+  defp evaluate({:call, next}, state = %State{pc: pc}) do
+    state = push_stack(state, {:value, pc+2})
+    {state, get_value(next, state)}
   end
-  defp step({:ret}, state) do
+  defp evaluate({:ret}, state) do
     {value, state} = pop_stack(state)
-    state
-    |> jump_pc({:value, value})
+    {state, value}
   end
-  defp step({:halt}, state) do
-    %State{state | halt: true}
+  defp evaluate({:halt}, state) do
+    {%State{state | halt: true}, state.pc}
   end
-  defp step(unknown, state) do
+  defp evaluate(unknown, state) do
     IO.puts "unknown command: #{inspect unknown}"
-    %State{state | halt: true}
-  end
-
-  defp increment_pc(state = %State{pc: pc}, step) do
-    %State{state | pc: pc + step}
-  end
-
-  defp jump_pc(state, target) do
-    %State{state | pc: get_value(target, state)}
+    {%State{state | halt: true}, state.pc}
   end
 
   defp get_value({:value, v}, _state), do: v
