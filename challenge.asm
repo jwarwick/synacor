@@ -262,10 +262,10 @@
 [01437]  {:out, {:value, 'no mod op'}}
 [01455]  {:out_newline, {:value, :newline}}
 [01457]  {:halt}
-[01458]  {:push, {:reg, 0}}
-[01460]  {:push, {:reg, 3}}
-[01462]  {:push, {:reg, 4}}
-[01464]  {:push, {:reg, 5}}
+[01458]  {:push, {:reg, 0}}                            ## Write memory to output
+[01460]  {:push, {:reg, 3}}                            ## r0 holds memory offset to write
+[01462]  {:push, {:reg, 4}}                            ## r1 holds the print function to use (1528)
+[01464]  {:push, {:reg, 5}}                            # first byte is number of chars to write
 [01466]  {:push, {:reg, 6}}
 [01468]  {:set, {:reg, 6}, {:reg, 0}}
 [01471]  {:set, {:reg, 5}, {:reg, 1}}
@@ -276,7 +276,7 @@
 [01488]  {:jt, {:reg, 0}, {:value, 1507}}
 [01491]  {:add, {:reg, 3}, {:reg, 3}, {:reg, 6}}
 [01495]  {:rmem, {:reg, 0}, {:reg, 3}}
-[01498]  {:call, {:reg, 5}}
+[01498]  {:call, {:reg, 5}}                               # Write char to output
 [01500]  {:add, {:reg, 1}, {:reg, 1}, {:value, 1}}
 [01504]  {:jt, {:reg, 1}, {:value, 1480}}
 [01507]  {:pop, {:reg, 6}}
@@ -284,14 +284,14 @@
 [01511]  {:pop, {:reg, 4}}
 [01513]  {:pop, {:reg, 3}}
 [01515]  {:pop, {:reg, 0}}
-[01517]  {:ret}
-[01518]  {:push, {:reg, 1}}
+[01517]  {:ret}                                     ###################### End read room description
+[01518]  {:push, {:reg, 1}}                         ## Pass output function to write function
 [01520]  {:set, {:reg, 1}, {:value, 1528}}
 [01523]  {:call, {:value, 1458}}
 [01525]  {:pop, {:reg, 1}}
-[01527]  {:ret}
-[01528]  {:out, {:reg, 0}}
-[01530]  {:ret}
+[01527]  {:ret}                                    ##########################
+[01528]  {:out, {:reg, 0}}                         # Write char to output
+[01530]  {:ret}                                   ####################################
 [01531]  {:push, {:reg, 1}}
 [01533]  {:set, {:reg, 1}, {:reg, 2}}
 [01536]  {:call, {:value, 2125}}
@@ -388,7 +388,7 @@
 [01762]  {:pop, {:reg, 1}}
 [01764]  {:pop, {:reg, 0}}
 [01766]  {:ret}
-[01767]  {:push, {:reg, 0}}
+[01767]  {:push, {:reg, 0}}                         ## Read user input
 [01769]  {:push, {:reg, 2}}
 [01771]  {:push, {:reg, 3}}
 [01773]  {:push, {:reg, 4}}
@@ -399,7 +399,7 @@
 [01787]  {:add, {:reg, 0}, {:reg, 0}, {:value, 1}}
 [01791]  {:gt, {:reg, 3}, {:reg, 0}, {:reg, 2}}
 [01795]  {:jt, {:reg, 3}, {:value, 1816}}
-[01798]  {:in, {:reg, 4}}
+[01798]  {:in, {:reg, 4}}                              # Main prompt read
 [01800]  {:eq, {:reg, 3}, {:reg, 4}, {:value, 10}}
 [01804]  {:jt, {:reg, 3}, {:value, 1816}}
 [01807]  {:wmem, {:reg, 0}, {:reg, 4}}
@@ -415,7 +415,7 @@
 [01834]  {:pop, {:reg, 3}}
 [01836]  {:pop, {:reg, 2}}
 [01838]  {:pop, {:reg, 0}}
-[01840]  {:ret}
+[01840]  {:ret}                                     #############################
 [01841]  {:push, {:reg, 3}}
 [01843]  {:push, {:reg, 4}}
 [01845]  {:push, {:reg, 5}}
@@ -583,7 +583,7 @@
 [02312]  {:pop, {:reg, 1}}
 [02314]  {:ret}
 [02315]  {:jmp, {:value, 2734}}
-[02317]  {:unknown, 6142}
+[02317]  {:unknown, 6142}                          ## String room - Room description pointers
 [02318]  {:unknown, 6152}
 [02319]  {:unknown, 26900}
 [02320]  {:unknown, 26903}
@@ -998,9 +998,9 @@
 [02729]  {:unknown, 22101}
 [02730]  {:unknown, 2553}
 [02731]  {:halt}
-[02732]  {:unknown, 2317}
+[02732]  {:unknown, 2317}                        # First room pointer
 [02733]  {:halt}
-[02734]  {:push, {:reg, 0}}
+[02734]  {:push, {:reg, 0}}                       ## Main loop?
 [02736]  {:push, {:reg, 1}}
 [02738]  {:push, {:reg, 2}}
 [02740]  {:push, {:reg, 3}}
@@ -1027,13 +1027,13 @@
 [02800]  {:set, {:reg, 0}, {:value, 27414}}
 [02803]  {:set, {:reg, 1}, {:value, 1531}}
 [02806]  {:add, {:reg, 2}, {:value, 7734}, {:value, 9395}}
-[02810]  {:call, {:value, 1458}}
+[02810]  {:call, {:value, 1458}}                       # Write memory at r0 to output
 [02812]  {:pop, {:reg, 2}}
 [02814]  {:pop, {:reg, 1}}
 [02816]  {:pop, {:reg, 0}}
 [02818]  {:set, {:reg, 0}, {:value, 32}}
 [02821]  {:set, {:reg, 1}, {:value, 25974}}
-[02824]  {:call, {:value, 1767}}
+[02824]  {:call, {:value, 1767}}                        # Get input from user
 [02826]  {:out_newline, {:value, :newline}}
 [02828]  {:out_newline, {:value, :newline}}
 [02830]  {:set, {:reg, 0}, {:value, 25974}}
@@ -1104,7 +1104,7 @@
 [03012]  {:set, {:reg, 0}, {:value, 27432}}
 [03015]  {:set, {:reg, 1}, {:value, 1531}}
 [03018]  {:add, {:reg, 2}, {:value, 4595}, {:value, 2160}}
-[03022]  {:call, {:value, 1458}}
+[03022]  {:call, {:value, 1458}}                               # Read room title
 [03024]  {:pop, {:reg, 2}}
 [03026]  {:pop, {:reg, 1}}
 [03028]  {:pop, {:reg, 0}}

@@ -31,12 +31,18 @@ defmodule Synacor.Token do
     op
   end
 
-  @doc """
-  Convert a binary file to assembly
-  """
-  def disassemble(input_path, output_path) do
-    result = input_path
+  def disassemble_file(input_path, output_path) do
+    input_path
     |> File.read!
+    |> disassemble(output_path)
+  end
+
+  @doc """
+  Convert a binary to assembly file
+  """
+  def disassemble(bin, output_path) do
+    result =
+    bin
     |> analyze
     |> Enum.reduce([], &merge_outs/2)
     |> Enum.reverse
@@ -106,13 +112,9 @@ defmodule Synacor.Token do
     end
   end
 
-  defp next_token(<<value::little-integer-size(16), rest::binary>>) do
-    IO.puts "Unknown opcode: #{inspect value}"
-    {{:unknown, value}, rest}
-  end
-  defp next_token(<<value, rest::binary>>) do
-    IO.puts "Unknown single byte: #{inspect value}"
-    {{:unknown_byte, value}, rest}
+  defp next_token(<<v::little-integer-size(16), rest::binary>>) do
+    IO.puts "Unknown opcode: #{inspect v}"
+    {{:unknown, [v]}, rest}
   end
   defp next_token(<<>>) do
     {{:end_of_stream}, <<>>}

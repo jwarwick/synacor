@@ -215,7 +215,7 @@ defmodule Synacor do
   defp step(state) do
     {new_state, new_pc} = one_step(state)
     i = Token.get_instruction(new_pc, state.instructions)
-    IO.puts "#{IO.ANSI.cyan()} #{inspect new_pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect state.registers}#{IO.ANSI.reset()}"
+    IO.puts "#{IO.ANSI.cyan()} #{inspect new_pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect new_state.registers}#{IO.ANSI.reset()}"
     {:noreply, %State{new_state | pc: new_pc}}
   end
 
