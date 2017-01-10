@@ -5,6 +5,7 @@ defmodule Synacor.Maze do
   """
 
   alias Synacor.Token
+  alias Graphvix.{Graph, Node, Edge}
 
   # The challenge.bin file has the text encrypted, you need to run until the main loop
   # is executed to decrypt the text. Then it can be accessed by these functions
@@ -23,13 +24,63 @@ defmodule Synacor.Maze do
   # There appear to be blocks that don't quite match this pattern, maybe still encrypted?
 
   defmodule Room do
-    defstruct offset: nil, title: nil, description: nil, neighbors: []
+    defstruct offset: nil, title: nil, description: nil, neighbors: [], node_id: nil
+  end
+
+  @default_start_offset 2317
+
+  @doc """
+  Generate a Graphviz graph of the maze
+  """
+  def graph(room_map = %{}) do
+    Graph.new(:maze)
+
+    room_map
+    |> add_nodes
+    |> Enum.reduce(Map.new, &add_map/2)
+    |> add_links
+
+    Graph.graph
+  end
+
+  defp add_nodes(list) do
+    list
+    |> Enum.map(&add_room_node/1)
+  end
+
+  defp add_room_node({_, room = %Room{title: title, description: description, offset: offset}}) do
+    desc = String.replace("#{description}", ~s("), ~s('))
+    {node_id, _} = Node.new(label: "#{title}\n#{desc}")
+    if @default_start_offset == offset do
+      Node.update(node_id, color: "green")
+    end
+    %Room{room | node_id: node_id}
+  end
+
+  defp add_map(room = %Room{offset: offset}, acc) do
+    Map.put(acc, offset, room)
+  end
+
+  defp add_links(map) do
+    map
+    |> Map.values
+    |> Enum.map(&(add_room_links(&1, map)))
+  end
+
+  defp add_room_links(%Room{node_id: id, neighbors: neighbors}, map) do
+    neighbors
+    |> Enum.map(&(add_room_link(id, &1, map)))
+  end
+
+  defp add_room_link(node_id, {direction, neigh_offset}, map) do
+    neigh = Map.get(map, neigh_offset)
+    Edge.new(node_id, neigh.node_id, label: direction)
   end
 
   @doc """
   Read all rooms
   """
-  def read_all_rooms(start_room_offset, bin) do
+  def read_all_rooms(start_room_offset \\ @default_start_offset, bin) do
     read_next([start_room_offset], Map.new(), bin)
   end
 
