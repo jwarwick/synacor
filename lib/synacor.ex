@@ -15,6 +15,7 @@ defmodule Synacor do
               halt: false,
               terminal: nil,
               mode: :run,
+              target_pc: nil,
               breakpoints: []
   end
 
@@ -140,6 +141,20 @@ defmodule Synacor do
   end
 
   @doc """
+  Step forward one instruction, don't go into `call`s
+  """
+  def next do
+    GenServer.cast(__MODULE__, {:next})
+  end
+
+  @doc """
+  Run until the next ret instruction and then break
+  """
+  def ret do
+    GenServer.cast(__MODULE__, {:ret})
+  end
+
+  @doc """
   Add a breakpoint
   """
   def add_break(addr) do
@@ -164,12 +179,11 @@ defmodule Synacor do
     {:ok, %State{instructions: bin, terminal: terminal, mode: mode}, 0}
   end
 
-
-  def handle_info(:timeout, state = %State{mode: :run}) do
-    run(state)
-  end
   def handle_info(:timeout, state = %State{mode: :step}) do
     {:noreply, state}
+  end
+  def handle_info(:timeout, state) do
+    run(state)
   end
 
   def handle_cast({:input, str}, state) do
@@ -187,10 +201,26 @@ defmodule Synacor do
     {:noreply, %State{new_state | pc: new_pc, mode: :run}, 0}
   end
   def handle_cast({:step}, state) do
-    step(state)
+    {new_state, new_pc} = one_step(state)
+    print_state(new_state, new_pc)
+    {:noreply, %State{new_state | pc: new_pc}}
+  end
+  def handle_cast({:next}, state) do
+    if is_call?(state) do
+      target_pc = next_pc(state)
+      {:noreply, %State{state | mode: :run_to, target_pc: target_pc}, 0}
+    else
+      {new_state, new_pc} = one_step(state)
+      print_state(new_state, new_pc)
+      {:noreply, %State{new_state | mode: :step, pc: new_pc}}
+    end
   end
   def handle_cast({:break}, state) do
+    print_state(state, state.pc)
     {:noreply, %State{state | mode: :step}, 0}
+  end
+  def handle_cast({:ret}, state) do
+    {:noreply, %State{state | mode: :ret}, 0}
   end
 
   def handle_call({:get_state}, _from, state) do
@@ -200,11 +230,14 @@ defmodule Synacor do
   defp run(state = %State{halt: true}) do
     {:noreply, state}
   end
+  defp run(state = %State{pc: pc, target_pc: pc, mode: :run_to}) do
+    print_state(state)
+    {:noreply, %State{state | mode: :step}}
+  end
   defp run(state = %State{pc: pc}) do
     if Enum.member?(state.breakpoints, pc) do
-      IO.puts "#{IO.ANSI.red()} Hit Breakpoint @ #{inspect pc} #{IO.ANSI.normal()}"
-      i = Token.get_instruction(pc, state.instructions)
-    IO.puts "#{IO.ANSI.cyan()} #{inspect pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect state.registers}#{IO.ANSI.reset()}"
+      write_output("#{IO.ANSI.red()} Hit Breakpoint @ #{inspect pc} #{IO.ANSI.normal()}\n", state)
+      print_state(state)
       {:noreply, %State{state | mode: :step}}
     else
       {new_state, new_pc} = one_step(state)
@@ -212,19 +245,11 @@ defmodule Synacor do
     end
   end
 
-  defp step(state) do
-    {new_state, new_pc} = one_step(state)
-    i = Token.get_instruction(new_pc, state.instructions)
-    IO.puts "#{IO.ANSI.cyan()} #{inspect new_pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.magenta()}reg: #{inspect new_state.registers}#{IO.ANSI.reset()}"
-    {:noreply, %State{new_state | pc: new_pc}}
-  end
-
   defp one_step(state = %State{halt: true}) do
     {state, state.pc}
   end
   defp one_step(state = %State{pc: pc, instructions: instructions}) do
     i = Token.get_instruction(pc, instructions)
-    # IO.puts "#{inspect pc}: #{inspect i}, reg: #{inspect state.registers}"
     evaluate(i, state)
   end
 
@@ -360,6 +385,10 @@ defmodule Synacor do
     state = push_stack(state, {:value, pc+2})
     {state, get_value(next, state)}
   end
+  defp evaluate({:ret}, state = %State{mode: :ret, pc: pc}) do
+    print_state(state)
+    {%State{state | mode: :step}, pc}
+  end
   defp evaluate({:ret}, state) do
     {value, state} = pop_stack(state)
     {state, value}
@@ -408,5 +437,38 @@ defmodule Synacor do
   end
   defp write_output(val, %State{terminal: terminal}) do
     send(terminal, {:output, val})
+  end
+
+  defp print_state(state, pc \\ nil) do
+    pc = if nil == pc do
+      state.pc
+    else
+      pc
+    end
+    print_instruction(pc, state)
+    write_output("     #{IO.ANSI.magenta()}registers: #{inspect state.registers}#{IO.ANSI.reset()}\n", state)
+    write_output("     #{IO.ANSI.blue()}stack: #{inspect state.stack}#{IO.ANSI.reset()}\n", state)
+  end
+
+  defp print_instruction(pc, state) do
+    i = Token.get_instruction(pc, state.instructions)
+    write_output("#{IO.ANSI.magenta()} #{inspect pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.reset()}\n", state)
+    ins = elem(i, 0)
+    size = Token.instruction_length(ins)
+    new_pc = pc + size
+    i = Token.get_instruction(pc + size, state.instructions)
+    write_output("#{IO.ANSI.white()} #{inspect new_pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.reset()}\n", state)
+  end
+
+  defp is_call?(state) do
+    i = Token.get_instruction(state.pc, state.instructions)
+    ins = elem(i, 0)
+    :call == ins
+  end
+
+  defp next_pc(state) do
+    i = Token.get_instruction(state.pc, state.instructions)
+    ins = elem(i, 0)
+    Token.instruction_length(ins) + state.pc
   end
 end

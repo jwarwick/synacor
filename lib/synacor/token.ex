@@ -46,6 +46,8 @@ defmodule Synacor.Token do
     |> analyze
     |> Enum.reduce([], &merge_outs/2)
     |> Enum.reverse
+    |> Enum.reduce([], &merge_letters/2)
+    |> Enum.reverse
     |> Enum.map(&op_to_string/1)
 
     File.write!(output_path, result)
@@ -120,6 +122,11 @@ defmodule Synacor.Token do
     {{:end_of_stream}, <<>>}
   end
 
+  for {name, value, args} <- @opcodes do
+    def instruction_length(unquote(name)), do: 1 + unquote(args)
+  end
+  def instruction_length(_), do: 1
+
   defp take_args(name, 0, rest), do: {{name}, rest}
   defp take_args(name, 1, <<v::little-integer-size(16), rest::binary>>), do: {{name, value(v)}, rest}
   defp take_args(name, 2, <<v::little-integer-size(16), v1::little-integer-size(16), rest::binary>>), do: {{name, value(v), value(v1)}, rest}
@@ -138,6 +145,15 @@ defmodule Synacor.Token do
     [{line, {:out, {:value, [x]}}} | acc]
   end
   defp merge_outs(op, acc), do: [op | acc]
+
+  # defp merge_letters(op = {_line, {:unknown, [letter]}}, acc = [{line, {:unknown, str}} | rest]) do
+  #   if String.printable?(<<letter>>) do
+  #     [{line, {:unknown, str ++ [letter]}} | rest]
+  #   else
+  #     [op | acc]
+  #   end
+  # end
+  defp merge_letters(op, acc), do: [op | acc]
 
   defp op_to_string({line, op}) do
     line_num = line |> Integer.to_string |> String.pad_leading(5, "0")
