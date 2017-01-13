@@ -17,7 +17,8 @@ defmodule Synacor do
               mode: :run,
               target_pc: nil,
               breakpoints: [],
-              call_stack: []
+              call_stack: [],
+              annotations: Map.new
   end
 
   ## API
@@ -126,6 +127,14 @@ defmodule Synacor do
   end
 
   @doc """
+  Annotate the given pc location
+  No pc specified (or set to `nil`) uses the current pc
+  """
+  def annotate(pc \\ nil, str) do
+    GenServer.cast(__MODULE__, {:annotate, pc, str})
+  end
+
+  @doc """
   Continue running a stepped VM
   """
   def continue do
@@ -205,6 +214,10 @@ defmodule Synacor do
   def handle_cast({:continue}, state) do
     {new_state, new_pc, timeout} = one_step(state)
     {:noreply, %State{new_state | pc: new_pc, mode: :run}, timeout}
+  end
+  def handle_cast({:annotate, pc, str}, state) do
+    new_state = annotate(pc, str, state)
+    {:noreply, new_state, 0}
   end
   def handle_cast({:step}, state) do
     {new_state, new_pc, _timeout} = one_step(state)
@@ -388,7 +401,7 @@ defmodule Synacor do
     end
   end
   defp evaluate({:call, next}, state = %State{pc: pc, call_stack: call_stack}) do
-    new_call_stack = List.insert_at(call_stack, 0, pc)
+    new_call_stack = List.insert_at(call_stack, 0, {pc, annotation(pc, state)})
     state = %State{state | call_stack: new_call_stack}
     state = push_stack(state, {:value, pc+2})
     {state, get_value(next, state), 0}
@@ -462,12 +475,26 @@ defmodule Synacor do
 
   defp print_instruction(pc, state) do
     i = Token.get_instruction(pc, state.instructions)
-    write_output("#{IO.ANSI.magenta()} #{inspect pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.reset()}\n", state)
+
+    instruction_str(IO.ANSI.magenta(), pc, i, state)
+    |> write_output(state)
+
     ins = elem(i, 0)
     size = Token.instruction_length(ins)
     new_pc = pc + size
-    i = Token.get_instruction(pc + size, state.instructions)
-    write_output("#{IO.ANSI.white()} #{inspect new_pc}: #{IO.ANSI.green()}#{inspect i}, #{IO.ANSI.reset()}\n", state)
+    i = Token.get_instruction(new_pc, state.instructions)
+    instruction_str(IO.ANSI.white(), new_pc, i, state)
+    |> write_output(state)
+  end
+
+  defp instruction_str(color, pc, instruction, state) do
+    str = "#{color} #{inspect pc}: #{IO.ANSI.green()}#{inspect instruction}, #{IO.ANSI.reset()}"
+    str = if nil != annotation(pc, state) do
+      str <> " #{IO.ANSI.white()}#{annotation(pc, state)}#{IO.ANSI.reset()}"
+    else
+      str
+    end
+    str <> "\n"
   end
 
   defp is_call?(state) do
@@ -480,5 +507,17 @@ defmodule Synacor do
     i = Token.get_instruction(state.pc, state.instructions)
     ins = elem(i, 0)
     Token.instruction_length(ins) + state.pc
+  end
+
+  defp annotate(nil, str, state) do
+    annotate(state.pc, str, state)
+  end
+  defp annotate(pc, str, state = %State{annotations: annotations}) do
+    new_annotations = Map.put(annotations, pc, str)
+    %State{state | annotations: new_annotations}
+  end
+
+  defp annotation(pc, state) do
+    Map.get(state.annotations, pc)
   end
 end

@@ -63,6 +63,13 @@ defmodule Synacor.Terminal do
     |> Synacor.save
     state
   end
+  defp handle_input("annotate " <> str, state) do
+    str
+    |> String.trim
+    |> String.split
+    |> handle_annotate
+    state
+  end
   defp handle_input("state", st) do
     Synacor.state
     |> write_inspect_output
@@ -119,6 +126,14 @@ defmodule Synacor.Terminal do
     str
     |> String.trim
     |> String.to_integer
+  end
+
+  defp handle_annotate([str]) do
+    Synacor.annotate(str)
+  end
+  defp handle_annotate([pc | rest]) do
+    str = Enum.join(rest, " ")
+    Synacor.annotate(get_integer(pc), str)
   end
 
 end
