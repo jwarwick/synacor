@@ -51,10 +51,27 @@ defmodule Synacor.Terminal do
   defp handle_input("quit", state) do
     %State{state | halt: true}
   end
+  defp handle_input("load " <> path, state) do
+    path
+    |> String.trim
+    |> Synacor.load
+    state
+  end
+  defp handle_input("save " <> path, state) do
+    path
+    |> String.trim
+    |> Synacor.save
+    state
+  end
   defp handle_input("state", st) do
     Synacor.state
     |> write_inspect_output
     st
+  end
+  defp handle_input("bt", state) do
+    Synacor.call_stack
+    |> Enum.map(&write_inspect_output/1)
+    state
   end
   defp handle_input("break", state) do
     Synacor.break
@@ -68,7 +85,7 @@ defmodule Synacor.Terminal do
     Synacor.next
     state
   end
-  defp handle_input("continue", state) do
+  defp handle_input("cont", state) do
     Synacor.continue
     state
   end

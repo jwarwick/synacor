@@ -16,7 +16,8 @@ defmodule Synacor do
               terminal: nil,
               mode: :run,
               target_pc: nil,
-              breakpoints: []
+              breakpoints: [],
+              call_stack: []
   end
 
   ## API
@@ -101,6 +102,11 @@ defmodule Synacor do
   Get the stack
   """
   def stack, do: state().stack
+
+  @doc """
+  Get the call stack trace
+  """
+  def call_stack, do: state().call_stack
 
   @doc """
   Get a memory location
@@ -193,15 +199,15 @@ defmodule Synacor do
     {:noreply, new_state, 0}
   end
   def handle_cast({:evaluate, instruction}, state) do
-    {new_state, _new_pc} = evaluate(instruction, state)
+    {new_state, _new_pc, _timeout} = evaluate(instruction, state)
     {:noreply, new_state, 0}
   end
   def handle_cast({:continue}, state) do
-    {new_state, new_pc} = one_step(state)
-    {:noreply, %State{new_state | pc: new_pc, mode: :run}, 0}
+    {new_state, new_pc, timeout} = one_step(state)
+    {:noreply, %State{new_state | pc: new_pc, mode: :run}, timeout}
   end
   def handle_cast({:step}, state) do
-    {new_state, new_pc} = one_step(state)
+    {new_state, new_pc, _timeout} = one_step(state)
     print_state(new_state, new_pc)
     {:noreply, %State{new_state | pc: new_pc}}
   end
@@ -210,7 +216,7 @@ defmodule Synacor do
       target_pc = next_pc(state)
       {:noreply, %State{state | mode: :run_to, target_pc: target_pc}, 0}
     else
-      {new_state, new_pc} = one_step(state)
+      {new_state, new_pc, _timeout} = one_step(state)
       print_state(new_state, new_pc)
       {:noreply, %State{new_state | mode: :step, pc: new_pc}}
     end
@@ -240,13 +246,13 @@ defmodule Synacor do
       print_state(state)
       {:noreply, %State{state | mode: :step}}
     else
-      {new_state, new_pc} = one_step(state)
-      {:noreply, %State{new_state | pc: new_pc}, 0}
+      {new_state, new_pc, timeout} = one_step(state)
+      {:noreply, %State{new_state | pc: new_pc}, timeout}
     end
   end
 
   defp one_step(state = %State{halt: true}) do
-    {state, state.pc}
+    {state, state.pc, :infinity}
   end
   defp one_step(state = %State{pc: pc, instructions: instructions}) do
     i = Token.get_instruction(pc, instructions)
@@ -257,41 +263,41 @@ defmodule Synacor do
   # It passes the new PC in the returned tuple
 
   defp evaluate({:noop}, state) do
-    {state, state.pc + 1}
+    {state, state.pc + 1, 0}
   end
   defp evaluate({:out, val}, state) do
     val = get_value(val, state)
     write_output(val, state)
-    {state, state.pc + 2}
+    {state, state.pc + 2, 0}
   end
   defp evaluate({:in, _reg}, state = %State{input: ""}) do
-    {state, state.pc}
+    {state, state.pc, :infinity}
   end
   defp evaluate({:in, {:reg, r}}, state = %State{input: <<char, rest::binary>>}) do
     state = %State{state | input: rest}
     |> set_register(r, {:value, char})
-    {state, state.pc + 2}
+    {state, state.pc + 2, 0}
   end
   defp evaluate({:add, {:reg, r}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     sum = Integer.mod(b + c, 32768)
     state = set_register(state, r, {:value, sum})
-    {state, state.pc + 4}
+    {state, state.pc + 4, 0}
   end
   defp evaluate({:mult, {:reg, r}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     mult = Integer.mod(b * c, 32768)
     state = set_register(state, r, {:value, mult})
-    {state, state.pc + 4}
+    {state, state.pc + 4, 0}
   end
   defp evaluate({:mod, {:reg, r}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     d = Integer.mod(rem(b, c), 32768)
     state = set_register(state, r, {:value, d})
-    {state, state.pc + 4}
+    {state, state.pc + 4, 0}
   end
   defp evaluate({:eq, {:reg, reg}, b, c}, state) do
     b = get_value(b, state)
@@ -302,7 +308,7 @@ defmodule Synacor do
       0
     end
     state = set_register(state, reg, {:value, eq})
-    {state, state.pc + 4}
+    {state, state.pc + 4, 0}
   end
   defp evaluate({:gt, {:reg, reg}, b, c}, state) do
     b = get_value(b, state)
@@ -313,92 +319,96 @@ defmodule Synacor do
       0
     end
     state = set_register(state, reg, {:value, val})
-    {state, state.pc + 4}
+    {state, state.pc + 4, 0}
   end
   defp evaluate({:and, {:reg, reg}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     state = set_register(state, reg, {:value, band(b,c)})
-    {state, state.pc + 4}
+    {state, state.pc + 4, 0}
   end
   defp evaluate({:or, {:reg, reg}, b, c}, state) do
     b = get_value(b, state)
     c = get_value(c, state)
     state = set_register(state, reg, {:value, bor(b,c)})
-    {state, state.pc + 4}
+    {state, state.pc + 4, 0}
   end
   defp evaluate({:not, {:reg, reg}, b}, state) do
     b = get_value(b, state)
     bn = flip_bits(b)
     state = set_register(state, reg, {:value, bn})
-    {state, state.pc + 3}
+    {state, state.pc + 3, 0}
   end
   defp evaluate({:push, reg}, state = %State{stack: stack}) do
     value = get_value(reg, state)
     new_stack = List.insert_at(stack, 0, value)
     state = %State{state | stack: new_stack}
-    {state, state.pc + 2}
+    {state, state.pc + 2, 0}
   end
   defp evaluate({:pop, {:reg, reg}}, state) do
     {value, state} = pop_stack(state)
     state = set_register(state, reg, {:value, value})
-    {state, state.pc + 2}
+    {state, state.pc + 2, 0}
   end
   defp evaluate({:rmem, {:reg, reg}, b}, state = %State{instructions: instructions}) do
     addr = get_value(b, state)
     value = Token.get_value(addr, instructions)
     state = set_register(state, reg, {:value, value})
-    {state, state.pc + 3}
+    {state, state.pc + 3, 0}
   end
   defp evaluate({:wmem, addr, value}, state = %State{instructions: instructions}) do
     val = get_value(value, state)
     offset = get_value(addr, state)
     new_instructions = Token.put_value(val, offset, instructions)
     state = %State{state | instructions: new_instructions}
-    {state, state.pc + 3}
+    {state, state.pc + 3, 0}
   end
   defp evaluate({:set, {:reg, reg}, val}, state) do
     state = set_register(state, reg, val)
-    {state, state.pc + 3}
+    {state, state.pc + 3, 0}
   end
   defp evaluate({:jmp, val}, state) do
     value = get_value(val, state)
-    {state, value}
+    {state, value, 0}
   end
   defp evaluate({:jt, test, target}, state) do
     value = get_value(test, state)
     if value != 0 do
-      {state, get_value(target, state)}
+      {state, get_value(target, state), 0}
     else
-      {state, state.pc + 3}
+      {state, state.pc + 3, 0}
     end
   end
   defp evaluate({:jf, test, target}, state) do
     value = get_value(test, state)
     if value == 0 do
-      {state, get_value(target, state)}
+      {state, get_value(target, state), 0}
     else
-      {state, state.pc + 3}
+      {state, state.pc + 3, 0}
     end
   end
-  defp evaluate({:call, next}, state = %State{pc: pc}) do
+  defp evaluate({:call, next}, state = %State{pc: pc, call_stack: call_stack}) do
+    new_call_stack = List.insert_at(call_stack, 0, pc)
+    state = %State{state | call_stack: new_call_stack}
     state = push_stack(state, {:value, pc+2})
-    {state, get_value(next, state)}
+    {state, get_value(next, state), 0}
   end
   defp evaluate({:ret}, state = %State{mode: :ret, pc: pc}) do
     print_state(state)
-    {%State{state | mode: :step}, pc}
+    {%State{state | mode: :step}, pc, 0}
   end
-  defp evaluate({:ret}, state) do
+  defp evaluate({:ret}, state = %State{call_stack: call_stack}) do
+    {_value, new_stack} = List.pop_at(call_stack, 0)
+    state = %State{state | call_stack: new_stack}
     {value, state} = pop_stack(state)
-    {state, value}
+    {state, value, 0}
   end
   defp evaluate({:halt}, state) do
-    {%State{state | halt: true}, state.pc}
+    {%State{state | halt: true}, state.pc, :infinity}
   end
   defp evaluate(unknown, state) do
     IO.puts "unknown command: #{inspect unknown}"
-    {%State{state | halt: true}, state.pc}
+    {%State{state | halt: true}, state.pc, 0}
   end
 
   defp get_value({:value, v}, _state), do: v
