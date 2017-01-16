@@ -113,8 +113,10 @@ defmodule Synacor do
   Get a memory location
   """
   def peek(address) do
-    instructions = state().instructions
-    Token.get_value(address, instructions)
+    s = state()
+    value = Token.get_value(address, s.instructions)
+    annotation = Map.get(s.annotations, address)
+    %{address: address, value: [value], annotation: annotation}
   end
 
   @doc """
