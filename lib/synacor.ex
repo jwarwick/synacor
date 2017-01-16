@@ -60,7 +60,7 @@ defmodule Synacor do
   def load(path) do
     bin = File.read!(path)
     state = :erlang.binary_to_term(bin)
-    set_state(%State{state | mode: :step})
+    set_state(%State{state | mode: :step, terminal: self()})
   end
 
   @doc """

@@ -263,10 +263,10 @@
 [01437]  {:out, {:value, 'no mod op'}}
 [01455]  {:out_newline, {:value, :newline}}
 [01457]  {:halt}
-[01458]  {:push, {:reg, 0}}
-[01460]  {:push, {:reg, 3}}
-[01462]  {:push, {:reg, 4}}
-[01464]  {:push, {:reg, 5}}
+[01458]  {:push, {:reg, 0}}				# Write memory to output
+[01460]  {:push, {:reg, 3}}				# r0 holds the memory offset
+[01462]  {:push, {:reg, 4}}				# r1 holds the print function to use (1528)
+[01464]  {:push, {:reg, 5}}				# first byte of memory is number of chars to write
 [01466]  {:push, {:reg, 6}}
 [01468]  {:set, {:reg, 6}, {:reg, 0}}
 [01471]  {:set, {:reg, 5}, {:reg, 1}}
@@ -277,7 +277,7 @@
 [01488]  {:jt, {:reg, 0}, {:value, 1507}}
 [01491]  {:add, {:reg, 3}, {:reg, 3}, {:reg, 6}}
 [01495]  {:rmem, {:reg, 0}, {:reg, 3}}
-[01498]  {:call, {:reg, 5}}
+[01498]  {:call, {:reg, 5}}				# write char to output
 [01500]  {:add, {:reg, 1}, {:reg, 1}, {:value, 1}}
 [01504]  {:jt, {:reg, 1}, {:value, 1480}}
 [01507]  {:pop, {:reg, 6}}
@@ -286,12 +286,12 @@
 [01513]  {:pop, {:reg, 3}}
 [01515]  {:pop, {:reg, 0}}
 [01517]  {:ret}
-[01518]  {:push, {:reg, 1}}
+[01518]  {:push, {:reg, 1}}				# Pass output function to write function
 [01520]  {:set, {:reg, 1}, {:value, 1528}}
 [01523]  {:call, {:value, 1458}}
 [01525]  {:pop, {:reg, 1}}
 [01527]  {:ret}
-[01528]  {:out, {:reg, 0}}
+[01528]  {:out, {:reg, 0}}				# write char to output
 [01530]  {:ret}
 [01531]  {:push, {:reg, 1}}
 [01533]  {:set, {:reg, 1}, {:reg, 2}}
@@ -389,7 +389,7 @@
 [01762]  {:pop, {:reg, 1}}
 [01764]  {:pop, {:reg, 0}}
 [01766]  {:ret}
-[01767]  {:push, {:reg, 0}}
+[01767]  {:push, {:reg, 0}}				# Read user input
 [01769]  {:push, {:reg, 2}}
 [01771]  {:push, {:reg, 3}}
 [01773]  {:push, {:reg, 4}}
@@ -400,8 +400,8 @@
 [01787]  {:add, {:reg, 0}, {:reg, 0}, {:value, 1}}
 [01791]  {:gt, {:reg, 3}, {:reg, 0}, {:reg, 2}}
 [01795]  {:jt, {:reg, 3}, {:value, 1816}}
-[01798]  {:in, {:reg, 4}}
-[01800]  {:eq, {:reg, 3}, {:reg, 4}, {:value, 10}}
+[01798]  {:in, {:reg, 4}}				# Main prompt read
+[01800]  {:eq, {:reg, 3}, {:reg, 4}, {:value, 10}}				# check for newline (end of input)
 [01804]  {:jt, {:reg, 3}, {:value, 1816}}
 [01807]  {:wmem, {:reg, 0}, {:reg, 4}}
 [01810]  {:add, {:reg, 5}, {:reg, 5}, {:value, 1}}
@@ -584,7 +584,7 @@
 [02312]  {:pop, {:reg, 1}}
 [02314]  {:ret}
 [02315]  {:jmp, {:value, 2734}}
-[02317]  {:unknown, [6142]}
+[02317]  {:unknown, [6142]}				# Room description pointers
 [02318]  {:unknown, [6152]}
 [02319]  {:unknown, [26900]}
 [02320]  {:unknown, [26903]}
@@ -999,9 +999,9 @@
 [02729]  {:unknown, [22101]}
 [02730]  {:unknown, [2553]}
 [02731]  {:halt}
-[02732]  {:unknown, [2317]}
+[02732]  {:unknown, [2317]}				# Current room pointer
 [02733]  {:halt}
-[02734]  {:push, {:reg, 0}}
+[02734]  {:push, {:reg, 0}}				# Main loop
 [02736]  {:push, {:reg, 1}}
 [02738]  {:push, {:reg, 2}}
 [02740]  {:push, {:reg, 3}}
@@ -1020,21 +1020,21 @@
 [02780]  {:jt, {:reg, 0}, {:value, 2791}}
 [02783]  {:set, {:reg, 0}, {:value, 25974}}
 [02786]  {:wmem, {:reg, 0}, {:value, 0}}
-[02789]  {:call, {:value, 2964}}
-[02791]  {:wmem, {:value, 2733}, {:reg, 1}}
+[02789]  {:call, {:value, 2964}}				# Call print room description
+[02791]  {:wmem, {:value, 2733}, {:reg, 1}}				# Main loop - main cycle point
 [02794]  {:push, {:reg, 0}}
 [02796]  {:push, {:reg, 1}}
 [02798]  {:push, {:reg, 2}}
 [02800]  {:set, {:reg, 0}, {:value, 27414}}
 [02803]  {:set, {:reg, 1}, {:value, 1531}}
 [02806]  {:add, {:reg, 2}, {:value, 7734}, {:value, 9395}}
-[02810]  {:call, {:value, 1458}}
+[02810]  {:call, {:value, 1458}}				# Write memory at r0 to output
 [02812]  {:pop, {:reg, 2}}
 [02814]  {:pop, {:reg, 1}}
 [02816]  {:pop, {:reg, 0}}
 [02818]  {:set, {:reg, 0}, {:value, 32}}
 [02821]  {:set, {:reg, 1}, {:value, 25974}}
-[02824]  {:call, {:value, 1767}}
+[02824]  {:call, {:value, 1767}}				# Get input from user
 [02826]  {:out_newline, {:value, :newline}}
 [02828]  {:out_newline, {:value, :newline}}
 [02830]  {:set, {:reg, 0}, {:value, 25974}}
@@ -1082,7 +1082,7 @@
 [02959]  {:pop, {:reg, 1}}
 [02961]  {:pop, {:reg, 0}}
 [02963]  {:ret}
-[02964]  {:push, {:reg, 0}}
+[02964]  {:push, {:reg, 0}}				# Print room description
 [02966]  {:push, {:reg, 1}}
 [02968]  {:push, {:reg, 2}}
 [02970]  {:rmem, {:reg, 1}, {:reg, 0}}
@@ -1105,7 +1105,7 @@
 [03012]  {:set, {:reg, 0}, {:value, 27432}}
 [03015]  {:set, {:reg, 1}, {:value, 1531}}
 [03018]  {:add, {:reg, 2}, {:value, 4595}, {:value, 2160}}
-[03022]  {:call, {:value, 1458}}
+[03022]  {:call, {:value, 1458}}				# Read room title
 [03024]  {:pop, {:reg, 2}}
 [03026]  {:pop, {:reg, 1}}
 [03028]  {:pop, {:reg, 0}}
@@ -1115,7 +1115,7 @@
 [03037]  {:out, {:value, '== '}}
 [03043]  {:add, {:reg, 0}, {:reg, 0}, {:value, 0}}
 [03047]  {:rmem, {:reg, 0}, {:reg, 0}}
-[03050]  {:call, {:value, 1518}}
+[03050]  {:call, {:value, 1518}}				# Print room title
 [03052]  {:out, {:value, ' =='}}
 [03058]  {:out_newline, {:value, :newline}}
 [03060]  {:pop, {:reg, 0}}
@@ -1133,7 +1133,7 @@
 [03093]  {:add, {:reg, 0}, {:reg, 0}, {:value, 1}}
 [03097]  {:add, {:reg, 0}, {:reg, 0}, {:reg, 1}}
 [03101]  {:rmem, {:reg, 0}, {:reg, 0}}
-[03104]  {:call, {:value, 1518}}
+[03104]  {:call, {:value, 1518}}				# Print room description
 [03106]  {:out_newline, {:value, :newline}}
 [03108]  {:pop, {:reg, 0}}
 [03110]  {:push, {:reg, 0}}
@@ -1145,12 +1145,12 @@
 [03123]  {:set, {:reg, 0}, {:value, 27455}}
 [03126]  {:set, {:reg, 1}, {:value, 1531}}
 [03129]  {:add, {:reg, 2}, {:value, 23069}, {:value, 8535}}
-[03133]  {:call, {:value, 1458}}
+[03133]  {:call, {:value, 1458}}				# Print "things of interest" header if there are interesting things
 [03135]  {:pop, {:reg, 2}}
 [03137]  {:pop, {:reg, 1}}
 [03139]  {:pop, {:reg, 0}}
 [03141]  {:rmem, {:reg, 2}, {:value, 2732}}
-[03144]  {:call, {:value, 5876}}
+[03144]  {:call, {:value, 5876}}				# Print things of interest
 [03146]  {:pop, {:reg, 0}}
 [03148]  {:push, {:reg, 0}}
 [03150]  {:add, {:reg, 0}, {:reg, 0}, {:value, 2}}
@@ -1174,7 +1174,7 @@
 [03224]  {:add, {:reg, 0}, {:reg, 0}, {:value, 2}}
 [03228]  {:rmem, {:reg, 0}, {:reg, 0}}
 [03231]  {:set, {:reg, 1}, {:value, 5814}}
-[03234]  {:call, {:value, 1458}}
+[03234]  {:call, {:value, 1458}}				# Print exits
 [03236]  {:pop, {:reg, 0}}
 [03238]  {:pop, {:reg, 2}}
 [03240]  {:pop, {:reg, 1}}
@@ -13619,7 +13619,7 @@
 [18059]  {:unknown, 'e'}
 [18060]  {:unknown, 'n'}
 [18061]  {:halt}
-[18062]  {:jmp, {:value, 116}}
+[18062]  {:jmp, {:value, 116}}				# Tablet (start)
 [18064]  {:unknown, 'a'}
 [18065]  {:unknown, 'b'}
 [18066]  {:unknown, 'l'}
@@ -14150,7 +14150,7 @@
 [18600]  {:unknown, 'a'}
 [18601]  {:unknown, 'l'}
 [18602]  {:unknown, 'i'}
-[18603]  {:unknown, 't'}
+[18603]  {:unknown, 't'}				# " "
 [18604]  {:unknown, 'y'}
 [18605]  {:unknown, ' '}
 [18606]  {:unknown, 'l'}
@@ -21338,12 +21338,12 @@
 [25970]  {:pop, {:value, 117}}
 [25972]  {:unknown, 's'}
 [25973]  {:unknown, 'e'}
-[25974]  {:unknown, ' '}
-[25975]  {:halt}
-[25976]  {:halt}
-[25977]  {:halt}
-[25978]  {:halt}
-[25979]  {:halt}
+[25974]  {:halt}
+[25975]  {:unknown, 'n'}
+[25976]  {:unknown, 'o'}
+[25977]  {:unknown, 'r'}
+[25978]  {:unknown, 't'}
+[25979]  {:unknown, 'h'}
 [25980]  {:halt}
 [25981]  {:halt}
 [25982]  {:halt}

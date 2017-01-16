@@ -6,7 +6,7 @@ defmodule Synacor.Terminal do
   alias Synacor.Token
   
   defmodule State do
-    defstruct pid: nil, halt: false
+    defstruct pid: nil, halt: false, file_base: nil
   end
 
   @doc """
@@ -30,7 +30,7 @@ defmodule Synacor.Terminal do
         IO.puts "Unknown input: #{inspect unknown}"
         state
     after
-      750 ->
+      250 ->
         get_input(state)
     end
     loop(new_state)
@@ -57,18 +57,27 @@ defmodule Synacor.Terminal do
     path
     |> String.trim
     |> Synacor.load
-    state
+
+    %State{state | file_base: Path.rootname(path)}
   end
   defp handle_input("save " <> path, state) do
     path
     |> String.trim
     |> Synacor.save
-    state
+
+    %State{state | file_base: Path.rootname(path)}
   end
   defp handle_input("dump " <> path, state) do
-    path = String.trim(path)
-    syn_state = Synacor.state()
-    Token.disassemble(syn_state.instructions, path, syn_state.annotations)
+    path
+    |> String.trim
+    |> do_dump
+
+    %State{state | file_base: Path.rootname(path)}
+  end
+  defp handle_input("checkpoint", state = %State{file_base: base}) do
+    Synacor.save("#{base}.bin")
+    do_dump("#{base}.asm")
+
     state
   end
   defp handle_input("annotate " <> str, state) do
@@ -146,6 +155,11 @@ defmodule Synacor.Terminal do
   defp handle_annotate([pc | rest]) do
     str = Enum.join(rest, " ")
     Synacor.annotate(get_integer(pc), str)
+  end
+
+  defp do_dump(path) do
+    syn_state = Synacor.state()
+    Token.disassemble(syn_state.instructions, path, syn_state.annotations)
   end
 
 end
