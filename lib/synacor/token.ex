@@ -40,15 +40,13 @@ defmodule Synacor.Token do
   @doc """
   Convert a binary to assembly file
   """
-  def disassemble(bin, output_path) do
+  def disassemble(bin, output_path, annotations \\ Map.new) do
     result =
     bin
     |> analyze
     |> Enum.reduce([], &merge_outs/2)
     |> Enum.reverse
-    |> Enum.reduce([], &merge_letters/2)
-    |> Enum.reverse
-    |> Enum.map(&op_to_string/1)
+    |> Enum.map(&(op_to_string(&1, annotations)))
 
     File.write!(output_path, result)
   end
@@ -115,14 +113,14 @@ defmodule Synacor.Token do
   end
 
   defp next_token(<<v::little-integer-size(16), rest::binary>>) do
-    IO.puts "Unknown opcode: #{inspect v}"
+    # IO.puts "Unknown opcode: #{inspect v}"
     {{:unknown, [v]}, rest}
   end
   defp next_token(<<>>) do
     {{:end_of_stream}, <<>>}
   end
 
-  for {name, value, args} <- @opcodes do
+  for {name, _value, args} <- @opcodes do
     def instruction_length(unquote(name)), do: 1 + unquote(args)
   end
   def instruction_length(_), do: 1
@@ -146,17 +144,13 @@ defmodule Synacor.Token do
   end
   defp merge_outs(op, acc), do: [op | acc]
 
-  # defp merge_letters(op = {_line, {:unknown, [letter]}}, acc = [{line, {:unknown, str}} | rest]) do
-  #   if String.printable?(<<letter>>) do
-  #     [{line, {:unknown, str ++ [letter]}} | rest]
-  #   else
-  #     [op | acc]
-  #   end
-  # end
-  defp merge_letters(op, acc), do: [op | acc]
-
-  defp op_to_string({line, op}) do
+  defp op_to_string({line, op}, annotations) do
     line_num = line |> Integer.to_string |> String.pad_leading(5, "0")
-    "[#{line_num}]  #{inspect op}\n"
+    str = "[#{line_num}]  #{inspect op}"
+    str = case Map.get(annotations, line) do
+      nil -> str
+      result -> str <> "\t\t\t\t\# #{result}"
+    end
+    str <> "\n"
   end
 end

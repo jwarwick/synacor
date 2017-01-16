@@ -2,6 +2,8 @@ defmodule Synacor.Terminal do
   @moduledoc """
   Interactive terminal for executing the Synacor VM
   """
+
+  alias Synacor.Token
   
   defmodule State do
     defstruct pid: nil, halt: false
@@ -61,6 +63,12 @@ defmodule Synacor.Terminal do
     path
     |> String.trim
     |> Synacor.save
+    state
+  end
+  defp handle_input("dump " <> path, state) do
+    path = String.trim(path)
+    syn_state = Synacor.state()
+    Token.disassemble(syn_state.instructions, path, syn_state.annotations)
     state
   end
   defp handle_input("annotate " <> str, state) do
