@@ -108,6 +108,10 @@ defmodule Synacor.Terminal do
     Synacor.ret
     state
   end
+  defp handle_input("up", state) do
+    Synacor.up
+    state
+  end
   defp handle_input("peek" <> addr, state) do
     addr
     |> get_integer

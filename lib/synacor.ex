@@ -165,6 +165,13 @@ defmodule Synacor do
   end
 
   @doc """
+  Pop up a level in the call stack
+  """
+  def up do
+    GenServer.cast(__MODULE__, {:up})
+  end
+
+  @doc """
   Run until the next ret instruction and then break
   """
   def ret do
@@ -235,6 +242,11 @@ defmodule Synacor do
       print_state(new_state, new_pc)
       {:noreply, %State{new_state | mode: :step, pc: new_pc}}
     end
+  end
+  def handle_cast({:up}, state) do
+    {last_call, _} = List.first(state.call_stack)
+    target_pc = last_call + Token.instruction_length(:call)
+    {:noreply, %State{state | mode: :run_to, target_pc: target_pc}, 0}
   end
   def handle_cast({:break}, state) do
     print_state(state, state.pc)
