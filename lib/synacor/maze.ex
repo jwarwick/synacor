@@ -46,20 +46,24 @@ defmodule Synacor.Maze do
   def solve do
     steps = [
       "take tablet",
-      "doorway",
-      "north",
-      "north",
-      "bridge",
-      "continue",
-      "down",
-      "east",
-      "take empty lantern",
-      "west",
-      "west",
-      "passage",
+      "bring 2680",
+      "take lit lantern",
+      "jump 2452",
+      "take red coin",
+      "jump 2478",
+      "take blue coin",
+      "jump 2483",
+      "take shiny coin",
+      "jump 2468",
+      "take concave coin",
+      "jump 2473",
+      "take corroded coin",
+      "jump 2463",
+      "take teleporter",
+      "jump 2457"
       ]
 
-    Enum.join(steps, "\n") <> "\n"
+    steps
   end
 
   @default_start_offset 2317
@@ -186,6 +190,25 @@ defmodule Synacor.Maze do
     desc = String.replace("#{desc}", ~s("), ~s('))
     loc = Token.get_value(offset+2, bin)
     %Item{offset: offset, name: name, description: desc, location: loc}
+  end
+
+  @doc """
+  Move an item to a new location
+  """
+  def move_item(item_offset) do
+    move_item(item_offset, current_room())
+  end
+  def move_item(item_offset, location_offset) do
+    Synacor.poke(item_offset+2, location_offset)
+  end
+
+  @doc """
+  Return the current room offset
+  """
+  def current_room do
+    map = Synacor.peek(@current_room_ptr)
+    [result] = map.value
+    result
   end
 
   defp get_string_ptr(offset, bin) do

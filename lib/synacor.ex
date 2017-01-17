@@ -210,8 +210,9 @@ defmodule Synacor do
     run(state)
   end
 
-  def handle_cast({:input, str}, state) do
-    {:noreply, %State{state | input: str <> "\n"}, 0}
+  def handle_cast({:input, str}, state = %State{input: input}) do
+    new_input = input <> str <> "\n"
+    {:noreply, %State{state | input: new_input}, 0}
   end
   def handle_cast({:set_state, new_state}, _state) do
     {:noreply, new_state, 0}

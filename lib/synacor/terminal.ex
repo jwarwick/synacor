@@ -7,7 +7,7 @@ defmodule Synacor.Terminal do
   alias Synacor.Maze
   
   defmodule State do
-    defstruct pid: nil, halt: false, file_base: nil
+    defstruct pid: nil, halt: false, file_base: nil, input: []
   end
 
   @doc """
@@ -45,10 +45,18 @@ defmodule Synacor.Terminal do
     IO.write([IO.ANSI.green(), val, IO.ANSI.reset()])
   end
 
-  defp get_input(state) do
+  defp get_input(state = %State{input: []}) do
     IO.gets(IO.ANSI.blue() <> "> " <> IO.ANSI.white() <> IO.ANSI.bright() <> IO.ANSI.reset())
     |> String.trim
     |> handle_input(state)
+  end
+  defp get_input(state = %State{input: [head | rest]}) do
+    IO.puts "Executing #{head}"
+    state = 
+      head
+      |> String.trim
+      |> handle_input(state)
+    %State{state | input: rest}
   end
 
   defp handle_input("quit", state) do
@@ -76,7 +84,7 @@ defmodule Synacor.Terminal do
     %State{state | file_base: Path.rootname(path)}
   end
   defp handle_input("checkpoint", state = %State{file_base: base}) do
-    Synacor.save("#{base}.bin")
+    Synacor.save("#{base}.state")
     do_dump("#{base}.asm")
 
     state
@@ -128,6 +136,12 @@ defmodule Synacor.Terminal do
     |> Maze.jump
     state
   end
+  defp handle_input("bring" <> addr, state) do
+    addr
+    |> get_integer
+    |> Maze.move_item
+    state
+  end
   defp handle_input("peek" <> addr, state) do
     addr
     |> get_integer
@@ -143,6 +157,12 @@ defmodule Synacor.Terminal do
   end
   defp handle_input("clear_break", state) do
     Synacor.clear_break
+    state
+  end
+  defp handle_input("solve", state) do
+    %State{state | input: Maze.solve}
+  end
+  defp handle_input("", state) do
     state
   end
   defp handle_input(str, state) do
