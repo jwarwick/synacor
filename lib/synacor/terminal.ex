@@ -4,6 +4,7 @@ defmodule Synacor.Terminal do
   """
 
   alias Synacor.Token
+  alias Synacor.Maze
   
   defmodule State do
     defstruct pid: nil, halt: false, file_base: nil
@@ -119,6 +120,12 @@ defmodule Synacor.Terminal do
   end
   defp handle_input("up", state) do
     Synacor.up
+    state
+  end
+  defp handle_input("jump" <> addr, state) do
+    addr
+    |> get_integer
+    |> Maze.jump
     state
   end
   defp handle_input("peek" <> addr, state) do

@@ -64,6 +64,14 @@ defmodule Synacor.Maze do
 
   @default_start_offset 2317
   @item_list_offset 27381
+  @current_room_ptr 2732
+
+  @doc """
+  Jump to the specified room offset
+  """
+  def jump(offset) do
+    Synacor.poke(@current_room_ptr, offset)
+  end
 
   @doc """
   Generate a Graphviz graph of the maze
