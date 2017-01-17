@@ -70,6 +70,41 @@ defmodule Synacor.Maze do
   @item_list_offset 27381
   @current_room_ptr 2732
 
+  @coins %{
+    2 => :red,
+    3 => :corroded,
+    5 => :shiny,
+    7 => :concave,
+    9 => :blue
+    }
+
+  @doc """
+  Solve the door equation:
+  _ + _ * _^2 + _^3 - _ = 399
+
+  Answer:
+  [9, 2, 5, 7, 3]
+  [:blue, :red, :shiny, :concave, :corroded]
+  """
+  def solve_door do
+    options = Map.keys(@coins)
+    for a <- options, b <- options, c <- options, d <- options, e <- options do
+      result = door_eqn(a, b, c, d, e) |> round
+      if 399 == result do
+        [a, b, c, d, e]
+        |> IO.inspect
+        |> Enum.map(&(Map.get(@coins, &1)))
+        |> IO.inspect
+      end
+      result
+    end
+  end
+
+  # _ + _ * _^2 + _^3 - _ = 399
+  defp door_eqn(a, b, c, d, e) do
+    a + b * :math.pow(c, 2) + :math.pow(d, 3) - e
+  end
+
   @doc """
   Jump to the specified room offset
   """

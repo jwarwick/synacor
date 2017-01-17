@@ -729,10 +729,7 @@
 [02459]  {:unknown, [27085]}
 [02460]  {:unknown, [27090]}
 [02461]  {:halt}
-[02462]  {:halt}
-[02463]  {:unknown, [10425]}
-[02464]  {:unknown, [10431]}
-[02465]  {:unknown, [27107]}
+[02462]  {:gt, {:value, 10425}, {:value, 10431}, {:value, 27107}}
 [02466]  {:unknown, [27109]}
 [02467]  {:unknown, [3893]}
 [02468]  {:unknown, [10605]}
@@ -957,23 +954,23 @@
 [02687]  {:unknown, [4799]}
 [02688]  {:unknown, [18618]}
 [02689]  {:unknown, [18627]}
-[02690]  {:halt}
+[02690]  {:unknown, [32767]}
 [02691]  {:unknown, [5360]}
 [02692]  {:unknown, [18691]}
 [02693]  {:unknown, [18705]}
-[02694]  {:halt}
+[02694]  {:unknown, [32767]}
 [02695]  {:unknown, [5377]}
 [02696]  {:unknown, [18769]}
 [02697]  {:unknown, [18780]}
-[02698]  {:halt}
+[02698]  {:unknown, [32767]}
 [02699]  {:unknown, [5394]}
 [02700]  {:unknown, [18852]}
 [02701]  {:unknown, [18865]}
-[02702]  {:halt}
+[02702]  {:unknown, [32767]}
 [02703]  {:unknown, [5411]}
 [02704]  {:unknown, [18953]}
 [02705]  {:unknown, [18963]}
-[02706]  {:halt}
+[02706]  {:unknown, [32767]}
 [02707]  {:unknown, [5428]}
 [02708]  {:unknown, [19029]}
 [02709]  {:unknown, [19040]}
@@ -999,8 +996,8 @@
 [02729]  {:unknown, [22101]}
 [02730]  {:unknown, [2553]}
 [02731]  {:halt}
-[02732]  {:unknown, [2457]}				# Current room pointer
-[02733]  {:unknown, [2457]}
+[02732]  {:unknown, [2488]}				# Current room pointer
+[02733]  {:unknown, [2488]}
 [02734]  {:push, {:reg, 0}}				# Main loop
 [02736]  {:push, {:reg, 1}}
 [02738]  {:push, {:reg, 2}}
@@ -2378,19 +2375,19 @@
 [06122]  {:unknown, 'e'}
 [06123]  {:unknown, 't'}
 [06124]  {:unknown, 'e'}
-[06125]  {:pop, {:value, 0}}
-[06127]  {:halt}
-[06128]  {:halt}
-[06129]  {:and, {:value, 0}, {:value, 0}, {:value, 0}}
-[06133]  {:halt}
-[06134]  {:halt}
-[06135]  {:halt}
-[06136]  {:halt}
-[06137]  {:halt}
-[06138]  {:halt}
-[06139]  {:halt}
-[06140]  {:halt}
-[06141]  {:halt}
+[06125]  {:pop, {:value, 20850}}
+[06127]  {:unknown, [27557]}
+[06128]  {:unknown, [169]}
+[06129]  {:and, {:value, 101}, {:value, 88}, {:value, 122}}
+[06133]  {:unknown, 't'}
+[06134]  {:unknown, 'q'}
+[06135]  {:unknown, 'S'}
+[06136]  {:unknown, 'A'}
+[06137]  {:unknown, 't'}
+[06138]  {:unknown, 'd'}
+[06139]  {:unknown, 'z'}
+[06140]  {:unknown, 'I'}
+[06141]  {:unknown, 'Y'}
 [06142]  {:add, {:value, 70}, {:value, 111}, {:value, 111}}
 [06146]  {:unknown, 't'}
 [06147]  {:unknown, 'h'}
@@ -6369,26 +6366,26 @@
 [10371]  {:unknown, 'd'}
 [10372]  {:unknown, 's'}
 [10373]  {:unknown, ':'}
-[10374]  {:mult, {:value, 10}, {:value, 95}, {:value, 32}}
+[10374]  {:mult, {:value, 10}, {:value, 57}, {:value, 32}}
 [10378]  {:unknown, '+'}
 [10379]  {:unknown, ' '}
-[10380]  {:unknown, '_'}
+[10380]  {:unknown, '2'}
 [10381]  {:unknown, ' '}
 [10382]  {:unknown, '*'}
 [10383]  {:unknown, ' '}
-[10384]  {:unknown, '_'}
+[10384]  {:unknown, '5'}
 [10385]  {:unknown, '^'}
 [10386]  {:unknown, '2'}
 [10387]  {:unknown, ' '}
 [10388]  {:unknown, '+'}
 [10389]  {:unknown, ' '}
-[10390]  {:unknown, '_'}
+[10390]  {:unknown, '7'}
 [10391]  {:unknown, '^'}
 [10392]  {:unknown, '3'}
 [10393]  {:unknown, ' '}
 [10394]  {:unknown, '-'}
 [10395]  {:unknown, ' '}
-[10396]  {:unknown, '_'}
+[10396]  {:unknown, '3'}
 [10397]  {:unknown, ' '}
 [10398]  {:unknown, '='}
 [10399]  {:unknown, ' '}
@@ -21339,24 +21336,24 @@
 [25972]  {:unknown, 's'}
 [25973]  {:unknown, 'e'}
 [25974]  {:halt}
-[25975]  {:unknown, 'i'}
-[25976]  {:unknown, 'n'}
-[25977]  {:unknown, 'v'}
-[25978]  {:unknown, 'k'}
-[25979]  {:mult, {:value, 116}, {:value, 101}, {:value, 108}}
-[25983]  {:unknown, 'e'}
-[25984]  {:unknown, 'p'}
-[25985]  {:unknown, 'o'}
-[25986]  {:unknown, 'r'}
-[25987]  {:unknown, 't'}
-[25988]  {:unknown, 'e'}
+[25975]  {:unknown, 'u'}
+[25976]  {:unknown, 's'}
+[25977]  {:unknown, 'e'}
+[25978]  {:mult, {:value, 116}, {:value, 101}, {:value, 108}}
+[25982]  {:unknown, 'e'}
+[25983]  {:unknown, 'p'}
+[25984]  {:unknown, 'o'}
+[25985]  {:unknown, 'r'}
+[25986]  {:unknown, 't'}
+[25987]  {:unknown, 'e'}
+[25988]  {:unknown, 'r'}
 [25989]  {:unknown, 'r'}
-[25990]  {:unknown, 'o'}
-[25991]  {:unknown, 'i'}
-[25992]  {:unknown, 'n'}
-[25993]  {:halt}
-[25994]  {:halt}
-[25995]  {:halt}
+[25990]  {:unknown, 'i'}
+[25991]  {:unknown, 'n'}
+[25992]  {:unknown, 'm'}
+[25993]  {:unknown, 'e'}
+[25994]  {:unknown, 'n'}
+[25995]  {:unknown, 't'}
 [25996]  {:halt}
 [25997]  {:halt}
 [25998]  {:halt}
@@ -22358,12 +22355,11 @@
 [27095]  {:gt, {:value, 267}, {:value, 271}, {:value, 275}}
 [27099]  {:unknown, [281]}
 [27100]  {:unknown, [287]}
-[27101]  {:gt, {:value, 0}, {:value, 0}, {:value, 0}}
-[27105]  {:halt}
-[27106]  {:halt}
-[27107]  {:set, {:value, 10599}, {:value, 1}}
-[27110]  {:unknown, [2457]}
-[27111]  {:push, {:value, 10750}}
+[27101]  {:gt, {:value, 9}, {:value, 2}, {:value, 5}}
+[27105]  {:jt, {:value, 3}, {:value, 1}}
+[27108]  {:unknown, [10599]}
+[27109]  {:set, {:value, 2457}, {:value, 2}}
+[27112]  {:unknown, [10750]}
 [27113]  {:unknown, [10755]}
 [27114]  {:push, {:value, 2473}}
 [27116]  {:unknown, [2457]}
