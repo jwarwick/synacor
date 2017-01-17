@@ -1000,7 +1000,7 @@
 [02730]  {:unknown, [2553]}
 [02731]  {:halt}
 [02732]  {:unknown, [2317]}				# Current room pointer
-[02733]  {:halt}
+[02733]  {:unknown, [2317]}
 [02734]  {:push, {:reg, 0}}				# Main loop
 [02736]  {:push, {:reg, 1}}
 [02738]  {:push, {:reg, 2}}
@@ -1075,7 +1075,7 @@
 [02942]  {:jmp, {:value, 2950}}
 [02944]  {:set, {:reg, 0}, {:value, 25974}}
 [02947]  {:wmem, {:reg, 0}, {:value, 0}}
-[02950]  {:call, {:reg, 1}}
+[02950]  {:call, {:reg, 1}}				# React to user input
 [02952]  {:jt, {:reg, 1}, {:value, 2742}}
 [02955]  {:pop, {:reg, 3}}
 [02957]  {:pop, {:reg, 2}}
@@ -2228,7 +2228,7 @@
 [05809]  {:pop, {:reg, 1}}
 [05811]  {:pop, {:reg, 0}}
 [05813]  {:ret}
-[05814]  {:out, {:value, '- '}}
+[05814]  {:out, {:value, '- '}}				# insert '-' before printing char
 [05818]  {:call, {:value, 1518}}
 [05820]  {:out_newline, {:value, :newline}}
 [05822]  {:ret}
@@ -2253,7 +2253,7 @@
 [05871]  {:pop, {:reg, 4}}
 [05873]  {:pop, {:reg, 3}}
 [05875]  {:ret}
-[05876]  {:push, {:reg, 0}}
+[05876]  {:push, {:reg, 0}}				# Print things of interest function
 [05878]  {:push, {:reg, 1}}
 [05880]  {:set, {:reg, 0}, {:value, 27381}}
 [05883]  {:set, {:reg, 1}, {:value, 5893}}
@@ -13625,7 +13625,7 @@
 [18066]  {:unknown, 'l'}
 [18067]  {:unknown, 'e'}
 [18068]  {:unknown, 't'}
-[18069]  {:unknown, [136]}
+[18069]  {:unknown, [136]}				# Tablet description
 [18070]  {:unknown, 'T'}
 [18071]  {:unknown, 'h'}
 [18072]  {:unknown, 'e'}
@@ -21339,10 +21339,10 @@
 [25972]  {:unknown, 's'}
 [25973]  {:unknown, 'e'}
 [25974]  {:halt}
-[25975]  {:unknown, 'n'}
+[25975]  {:unknown, 'l'}
 [25976]  {:unknown, 'o'}
-[25977]  {:unknown, 'r'}
-[25978]  {:unknown, 't'}
+[25977]  {:unknown, 'o'}
+[25978]  {:unknown, 'k'}
 [25979]  {:unknown, 'h'}
 [25980]  {:halt}
 [25981]  {:halt}
@@ -22542,7 +22542,7 @@
 [27378]  {:unknown, [2663]}
 [27379]  {:halt}
 [27380]  {:halt}
-[27381]  {:wmem, {:value, 2668}, {:value, 2672}}
+[27381]  {:wmem, {:value, 2668}, {:value, 2672}}				# Start of items table
 [27384]  {:unknown, [2676]}
 [27385]  {:unknown, [2680]}
 [27386]  {:unknown, [2684]}

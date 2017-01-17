@@ -2,55 +2,101 @@ defmodule Synacor.Maze do
   @moduledoc """
   Functions to work with the maze embedded in the binary file
   Assumes `challenge.bin` file has already been decrypted
+
+  The challenge.bin file has the text encrypted, you need to run until the main loop
+  is executed to decrypt the text. Then it can be accessed by these functions
+  
+  Strings are pascal-style, the first instruction tells how many letters follow
+  Lists have a leading instruction telling the length of the list
+  
+  Address 2732 holds the address of the current room
+  Starting room is at address 2317 (read from address 2732)
+  First instruction is a pointer to the room title
+  Second instruction is a pointer to the room description
+  Third instruction is a pointer to a list of possible directions
+   The list is pointers to direction strings
+  Fourth instruction is a pointer to a list of the rooms for the given directions
+  Fifth instruction is items?
+  There appear to be blocks that don't quite match this pattern, maybe still encrypted?
+
+  The items table is at offset 27381, which holds the number of items
+  27382 holds the ptr to the first item (2668)
+
+  Item structure:
+  2668 -> name ptr
+  2669 -> description ptr
+  2670 -> room number where item is located
+  2671 -> ? seems like a function ptr. Maybe the USE behavior?
   """
 
   alias Synacor.Token
   alias Graphvix.{Graph, Node, Edge}
 
-  # The challenge.bin file has the text encrypted, you need to run until the main loop
-  # is executed to decrypt the text. Then it can be accessed by these functions
-  #
-  # Strings are pascal-style, the first instruction tells how many letters follow
-  # Lists have a leading instruction telling the length of the list
-  #
-  # Address 2732 holds the address of the current room
-  # Starting room is at address 2317 (read from address 2732)
-  # First instruction is a pointer to the room title
-  # Second instruction is a pointer to the room description
-  # Third instruction is a pointer to a list of possible directions
-  #  The list is pointers to direction strings
-  # Fourth instruction is a pointer to a list of the rooms for the given directions
-  # Fifth instruction is items?
-  # There appear to be blocks that don't quite match this pattern, maybe still encrypted?
-
   defmodule Room do
     defstruct offset: nil, title: nil, description: nil, neighbors: [], node_id: nil
   end
 
+  defmodule Item do
+    defstruct offset: nil, name: nil, description: nil, location: nil
+  end
+
+  @doc """
+  Generate a string that will solve the maze
+  """
+  def solve do
+    steps = [
+      "take tablet",
+      "doorway",
+      "north",
+      "north",
+      "bridge",
+      "continue",
+      "down",
+      "east",
+      "take empty lantern",
+      "west",
+      "west",
+      "passage",
+      ]
+
+    Enum.join(steps, "\n") <> "\n"
+  end
+
   @default_start_offset 2317
+  @item_list_offset 27381
 
   @doc """
   Generate a Graphviz graph of the maze
   """
-  def graph(room_map = %{}) do
+  def graph(bin) do
+    rooms = read_all_rooms(bin)
+    items = read_all_items(bin)
+    graph(rooms, items)
+  end
+  def graph(room_map = %{}, items = %{}) do
     Graph.new(:maze)
 
     room_map
-    |> add_nodes
+    |> add_nodes(items)
     |> Enum.reduce(Map.new, &add_map/2)
     |> add_links
 
     Graph.graph
   end
 
-  defp add_nodes(list) do
+  defp add_nodes(list, items) do
     list
-    |> Enum.map(&add_room_node/1)
+    |> Enum.map(&(add_room_node(&1, items)))
   end
 
-  defp add_room_node({_, room = %Room{title: title, description: description, offset: offset}}) do
+  defp add_room_node({_, room = %Room{title: title, description: description, offset: offset}}, items) do
     desc = String.replace("#{description}", ~s("), ~s('))
-    {node_id, _} = Node.new(label: "#{title}\n#{desc}")
+    label = "#{title} (#{inspect offset})\n#{desc}"
+    label = case Map.get(items, offset, nil) do
+      nil -> label
+      item -> label <> "\n\n\nItem: #{item.name}\n#{item.description}"
+    end
+    {node_id, _} = Node.new(label: label)
     if @default_start_offset == offset do
       Node.update(node_id, color: "green")
     end
@@ -94,7 +140,7 @@ defmodule Synacor.Maze do
       |> Enum.reject(&(Enum.member?(l, &1)))
     read_next(neighbors ++ rest, Map.put(map, r.offset, r), bin)
   end
-  
+
   @doc """
   Read one room from a binary
   """
@@ -106,6 +152,32 @@ defmodule Synacor.Maze do
     rooms = get_string_ptr(offset+3, bin)
     z = Enum.zip(names, rooms)
     %Room{offset: offset, title: title, description: desc, neighbors: z}
+  end
+
+  @doc """
+  Read all items
+  """
+  def read_all_items(start_item_offset \\ @item_list_offset, bin) do
+    num_items = Token.get_value(start_item_offset, bin)
+    read_next_item(num_items, start_item_offset+1, bin, Map.new)
+  end
+
+  defp read_next_item(0, _, _, acc), do: acc
+  defp read_next_item(num_items, offset, bin, acc) do
+    item_ptr = Token.get_value(offset, bin)
+    item = read_item(item_ptr, bin)
+    read_next_item(num_items - 1, offset + 1, bin, Map.put(acc, item.location, item))
+  end
+  
+  @doc """
+  Read one item from a binary
+  """
+  def read_item(offset, bin) do
+    name = get_string_ptr(offset, bin)
+    desc = get_string_ptr(offset+1, bin)
+    desc = String.replace("#{desc}", ~s("), ~s('))
+    loc = Token.get_value(offset+2, bin)
+    %Item{offset: offset, name: name, description: desc, location: loc}
   end
 
   defp get_string_ptr(offset, bin) do
