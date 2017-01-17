@@ -978,7 +978,7 @@
 [02711]  {:unknown, [5445]}
 [02712]  {:unknown, [19113]}
 [02713]  {:unknown, [19127]}
-[02714]  {:unknown, [2488]}
+[02714]  {:halt}
 [02715]  {:halt}
 [02716]  {:unknown, [19192]}
 [02717]  {:unknown, [19196]}
@@ -990,7 +990,7 @@
 [02723]  {:unknown, [5721]}
 [02724]  {:unknown, [19384]}
 [02725]  {:unknown, [19397]}
-[02726]  {:unknown, [2488]}
+[02726]  {:halt}
 [02727]  {:halt}
 [02728]  {:unknown, [22093]}
 [02729]  {:unknown, [22101]}
@@ -21335,22 +21335,21 @@
 [25970]  {:pop, {:value, 117}}
 [25972]  {:unknown, 's'}
 [25973]  {:unknown, 'e'}
-[25974]  {:halt}
-[25975]  {:unknown, 'u'}
-[25976]  {:unknown, 's'}
-[25977]  {:unknown, 'e'}
-[25978]  {:mult, {:value, 116}, {:value, 101}, {:value, 108}}
-[25982]  {:unknown, 'e'}
-[25983]  {:unknown, 'p'}
-[25984]  {:unknown, 'o'}
-[25985]  {:unknown, 'r'}
-[25986]  {:unknown, 't'}
-[25987]  {:unknown, 'e'}
-[25988]  {:unknown, 'r'}
-[25989]  {:unknown, 'r'}
-[25990]  {:unknown, 'i'}
-[25991]  {:unknown, 'n'}
-[25992]  {:unknown, 'm'}
+[25974]  {:call, {:value, 108}}
+[25976]  {:unknown, 'o'}
+[25977]  {:unknown, 'o'}
+[25978]  {:unknown, 'k'}
+[25979]  {:and, {:value, 115}, {:value, 116}, {:value, 114}}
+[25983]  {:unknown, 'a'}
+[25984]  {:unknown, 'n'}
+[25985]  {:unknown, 'g'}
+[25986]  {:unknown, 'e'}
+[25987]  {:unknown, ' '}
+[25988]  {:unknown, 'b'}
+[25989]  {:unknown, 'o'}
+[25990]  {:unknown, 'o'}
+[25991]  {:unknown, 'k'}
+[25992]  {:unknown, 'd'}
 [25993]  {:unknown, 'e'}
 [25994]  {:unknown, 'n'}
 [25995]  {:unknown, 't'}

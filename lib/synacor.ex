@@ -57,10 +57,10 @@ defmodule Synacor do
   Load a file as the current state.
   Puts the VM into :step mode
   """
-  def load(path) do
+  def load(path, terminal \\ self()) do
     bin = File.read!(path)
     state = :erlang.binary_to_term(bin)
-    set_state(%State{state | mode: :step, terminal: self()})
+    set_state(%State{state | mode: :step, terminal: terminal})
   end
 
   @doc """

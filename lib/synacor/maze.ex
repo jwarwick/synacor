@@ -60,7 +60,10 @@ defmodule Synacor.Maze do
       "take corroded coin",
       "jump 2463",
       "take teleporter",
-      "jump 2457"
+      "jump 2457",
+      "use teleporter",
+      "take business card",
+      "take strange book"
       ]
 
     steps
@@ -141,13 +144,25 @@ defmodule Synacor.Maze do
     label = "#{title} (#{inspect offset})\n#{desc}"
     label = case Map.get(items, offset, nil) do
       nil -> label
-      item -> label <> "\n\n\nItem: #{item.name}\n#{item.description}"
+      items -> label <> "\n\n\nItem: " <> item_strs(items)
     end
     {node_id, _} = Node.new(label: label)
     if @default_start_offset == offset do
       Node.update(node_id, color: "green")
     end
     %Room{room | node_id: node_id}
+  end
+
+  defp item_strs(item_list) do
+    item_list
+    |> Enum.map(&item_str/1)
+    |> Enum.join("\n\n")
+  end
+
+  defp item_str(item) do
+    desc = String.replace("#{item.description}", ~s("), ~s('))
+    name = String.replace("#{item.name}", ~s("), ~s('))
+    "#{name}\n#{desc}"
   end
 
   defp add_map(room = %Room{offset: offset}, acc) do
@@ -213,7 +228,8 @@ defmodule Synacor.Maze do
   defp read_next_item(num_items, offset, bin, acc) do
     item_ptr = Token.get_value(offset, bin)
     item = read_item(item_ptr, bin)
-    read_next_item(num_items - 1, offset + 1, bin, Map.put(acc, item.location, item))
+    new_map = Map.update(acc, item.location, [item], &([item] ++ &1))
+    read_next_item(num_items - 1, offset + 1, bin, new_map)
   end
   
   @doc """
