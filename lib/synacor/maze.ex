@@ -46,7 +46,7 @@ defmodule Synacor.Maze do
   def solve do
     steps = [
       "take tablet",
-      "bring 2680",
+      "bring 2680",                 # fetch the lit lantern
       "take lit lantern",
       "jump 2452",
       "take red coin",
@@ -63,7 +63,16 @@ defmodule Synacor.Maze do
       "jump 2457",
       "use teleporter",
       "take business card",
-      "take strange book"
+      "take strange book",
+      "poke 6027 21",              # disable teleporter confirmation function
+      "poke 6028 21",
+      "poke 6029 21",
+      "poke 6030 21",
+      "poke 6031 1",
+      "poke 6032 32768",
+      "poke 6033 6",
+      "set_register 7 1",          # end disable teleporter confirmation function
+      "use teleporter"
       ]
 
     steps

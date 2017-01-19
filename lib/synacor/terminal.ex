@@ -101,6 +101,15 @@ defmodule Synacor.Terminal do
     |> write_inspect_output
     st
   end
+  defp handle_input("set_register " <> args, state) do
+    [reg_offset, value] =
+      args
+      |> String.trim
+      |> String.split
+      |> Enum.map(&get_integer/1)
+    Synacor.set_register(reg_offset, value)
+    state
+  end
   defp handle_input("bt", state) do
     Synacor.call_stack
     |> Enum.map(&write_inspect_output/1)
@@ -147,6 +156,15 @@ defmodule Synacor.Terminal do
     |> get_integer
     |> Synacor.peek
     |> write_inspect_output
+    state
+  end
+  defp handle_input("poke " <> args, state) do
+    [address, value] =
+      args
+      |> String.trim
+      |> String.split
+      |> Enum.map(&get_integer/1)
+    Synacor.poke(address, value)
     state
   end
   defp handle_input("add_break" <> addr, state) do
