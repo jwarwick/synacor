@@ -484,7 +484,8 @@ defmodule Synacor do
       pc
     end
     print_instruction(pc, state)
-    write_output("     #{IO.ANSI.magenta()}registers: #{inspect state.registers}#{IO.ANSI.reset()}\n", state)
+    reg = Enum.zip(0..7, state.registers)
+    write_output("     #{IO.ANSI.magenta()}registers: #{inspect reg}#{IO.ANSI.reset()}\n", state)
     write_output("     #{IO.ANSI.blue()}stack: #{inspect state.stack}#{IO.ANSI.reset()}\n", state)
   end
 

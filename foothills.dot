@@ -1,152 +1,180 @@
 digraph G {
-  node_11 [label="Ruins (2447)
-You stand in a large cavern with a huge ruin to the north, overgrown by plant life.  There is a large stone archway to the north acting as the doorway to the ruined complex.  A crevice in the rock to the east leads to an alarmingly dark passageway."];
-  node_26 [label="Moss cavern (2352)
-You are standing in a large cavern full of bioluminescent moss.  It must have broken your fall!  The cavern extends to the east and west; at the west end, you think you see a passage leading out of the cavern."];
-  node_15 [label="Dark passage (2442)
-You are in a dark, narrow passage.  To the west, you spot some vegetation where the passage expands."];
-  node_20 [label="Twisty passages (2382)
-You are in a twisty maze of little passages, all alike."];
-  node_17 [label="Moss cavern (2362)
-You are standing in a large cavern full of bioluminescent moss.  The cavern extends to the east.  There is a crevise in the rocks which opens into a passage."];
-  node_25 [label="Ruins (2478)
-You find yourself in what was once the living quarters for the complex.  Many smaller rooms which once had walls to divide them now lay in disarray.  There is a staircase up here."];
-  node_13 [label="Dark passage (2437)
-You are in a dark, narrow passage."];
-  node_8 [label="Twisty passages (2412)
-You are in a maze of twisty little passages, all alike."];
-  node_7 [label="Ruins (2457)
-You stand in the massive central hall of these ruins.  The walls are crumbling, and vegetation has clearly taken over.  Rooms are attached in all directions.  There is a strange monument in the center of the hall with circular slots and unusual symbols.  It reads:
+  node_230 [label="Foothills (2317)
+You find yourself standing at the base of an enormous mountain.  At its base to the north, there is a massive doorway.  A sign nearby reads 'Keep out!  Definitely no treasure within!'
 
-_ + _ * _^2 + _^3 - _ = 399"];
-  node_1 [label="Ruins (2468)
-You stand in what seems to have once been a dining hall; broken tables and pottery are scattered everywhere.  A staircase here leads down."];
-  node_32 [label="Ruins (2473)
-This seems to be a kitchen; there are brick stoves and shelves along the wall.  Everything here has fallen into disrepair."];
-  node_3 [label="Ruins (2483)
-This was long ago a lavish throne room.  Dried-up fountains and crumbling statues line the walls, and the carved stone throne in the center of the room is falling apart."];
-  node_6 [label="Dark cave (2337)
-The cave acoustics dramatically change as you find yourself at a legde above a large chasm.  There is barely enough light here to notice a rope bridge leading out into the dark emptiness."];
-  node_2 [label="Falling through the air! (2347)
-As you continue along the bridge, it snaps!  You try to grab the bridge, but it evades your grasp in the darkness.  You are plummeting quickly downward into the chasm..."];
-  node_33 [label="Twisty passages (2422)
-You are in a twisty maze of little passages, all alike."];
-  node_10 [label="Foothills (2317)
-You find yourself standing at the base of an enormous mountain.  At its base to the north, there is a massive doorway.  A sign nearby reads 'Keep out!  Definitely no treasure within!'",color="green"];
-  node_9 [label="Rope bridge (2342)
-This rope bridge creaks as you walk along it.  You aren't sure how old it is, or whether it can even support your weight."];
-  node_19 [label="Ruins (2463)
-Because it has been so well-protected, this room hardly shows signs of decay.  The walls are covered in elaborate murals and decorated with precious metals and stones."];
-  node_14 [label="Twisty passages (2397)
-You are in a little maze of twisty passages, all alike."];
-  node_5 [label="Ruins (2452)
-You are in the once-opulent foyer of a massive ruined complex.  There is a door to the south leading to the overgrowth outside and stairs to the north which lead into a larger hall."];
-  node_18 [label="Twisty passages (2377)
-You are in a maze of twisty little passages, all dimly lit by more bioluminescent moss.  There is a ladder here leading up."];
-  node_31 [label="Twisty passages (2387)
-You are in a maze of little twisty passages, all alike."];
-  node_22 [label="Twisty passages (2392)
+
+Item: tablet (2668)
+The tablet seems appropriate for use as a writing surface but is unfortunately blank.  Perhaps you should USE it as a writing surface...",color="green"];
+  node_232 [label="Dark cave (2332)
+The cave is somewhat narrow here, and the light from the doorway to the south is quite dim."];
+  node_236 [label="Twisty passages (2407)
+You are in a maze of alike twisty passages, all little."];
+  node_248 [label="Foothills (2322)
+As you begin to leave, you feel the urge for adventure pulling you back..."];
+  node_224 [label="Passage (2372)
+὏ᾉ"];
+  node_242 [label="Twisty passages (2392)
 You are in a maze of alike little passages, all twisty.
 
 The passage to the east looks very dark; you think you hear a Grue."];
-  node_29 [label="Dark passage (2427)
-You are in a narrow passage.  There is darkness to the west, but you can barely see a glowing opening to the east."];
-  node_21 [label="Twisty passages (2402)
-You are in a twisty alike of little passages, all maze.
-
-The east passage appears very dark; you feel likely to be eaten by a Grue."];
-  node_27 [label="Dark passage (2432)
-You are in a dark, narrow passage."];
-  node_24 [label="Moss cavern (2357)
+  node_238 [label="Twisty passages (2377)
+You are in a maze of twisty little passages, all dimly lit by more bioluminescent moss.  There is a ladder here leading up."];
+  node_235 [label="Dark passage (2442)
+You are in a dark, narrow passage.  To the west, you spot some vegetation where the passage expands."];
+  node_244 [label="Moss cavern (2357)
 You are standing in a large cavern full of bioluminescent moss.  The cavern extends to the west.
 
 
-Item: empty lantern
+Item: empty lantern (2672)
 The lantern seems to have quite a bit of wear but appears otherwise functional.  It is, however, sad that it is out of oil."];
-  node_30 [label="Dark cave (2327)
-This seems to be the mouth of a deep cave.  As you peer north into the darkness, you think you hear the echoes of bats deeper within."];
-  node_23 [label="Passage (2367)
-You are in a crevise on the west wall of the moss cavern.  A dark passage leads further west.  There is a ladder here which leads down into a smaller, moss-filled cavern below."];
-  node_28 [label="Foothills (2322)
-As you begin to leave, you feel the urge for adventure pulling you back..."];
-  node_16 [label="Twisty passages (2407)
-You are in a maze of alike twisty passages, all little."];
-  node_4 [label="Passage (2372)
-὏ᾉ"];
-  node_12 [label="Dark cave (2332)
-The cave is somewhat narrow here, and the light from the doorway to the south is quite dim."];
+  node_231 [label="Ruins (2447)
+You stand in a large cavern with a huge ruin to the north, overgrown by plant life.  There is a large stone archway to the north acting as the doorway to the ruined complex.  A crevice in the rock to the east leads to an alarmingly dark passageway."];
+  node_221 [label="Ruins (2468)
+You stand in what seems to have once been a dining hall; broken tables and pottery are scattered everywhere.  A staircase here leads down.
 
-  node_33 -> node_31 [label="north"];
-  node_8 -> node_18 [label="west"];
-  node_15 -> node_13 [label="east"];
-  node_4 -> node_23 [label="back"];
-  node_22 -> node_22 [label="south"];
-  node_15 -> node_11 [label="west"];
-  node_1 -> node_32 [label="down"];
-  node_17 -> node_23 [label="passage"];
-  node_21 -> node_8 [label="north"];
-  node_10 -> node_28 [label="south"];
-  node_16 -> node_31 [label="north"];
-  node_20 -> node_31 [label="north"];
-  node_21 -> node_33 [label="east"];
-  node_18 -> node_31 [label="south"];
-  node_9 -> node_6 [label="back"];
-  node_16 -> node_20 [label="east"];
-  node_29 -> node_4 [label="east"];
-  node_21 -> node_20 [label="south"];
-  node_7 -> node_19 [label="north"];
-  node_30 -> node_12 [label="north"];
-  node_2 -> node_26 [label="down"];
-  node_17 -> node_26 [label="east"];
-  node_16 -> node_16 [label="south"];
-  node_22 -> node_33 [label="east"];
-  node_20 -> node_18 [label="south"];
-  node_18 -> node_23 [label="ladder"];
-  node_3 -> node_25 [label="down"];
-  node_1 -> node_7 [label="west"];
-  node_22 -> node_18 [label="west"];
-  node_32 -> node_1 [label="up"];
-  node_22 -> node_16 [label="north"];
-  node_7 -> node_5 [label="south"];
-  node_12 -> node_6 [label="north"];
-  node_27 -> node_29 [label="east"];
-  node_9 -> node_2 [label="continue"];
-  node_33 -> node_20 [label="south"];
-  node_5 -> node_11 [label="south"];
-  node_25 -> node_7 [label="east"];
-  node_23 -> node_18 [label="ladder"];
-  node_6 -> node_9 [label="bridge"];
-  node_19 -> node_7 [label="south"];
-  node_14 -> node_21 [label="south"];
-  node_6 -> node_30 [label="south"];
-  node_18 -> node_20 [label="north"];
-  node_18 -> node_22 [label="east"];
-  node_23 -> node_17 [label="cavern"];
-  node_12 -> node_30 [label="south"];
-  node_27 -> node_13 [label="west"];
-  node_13 -> node_27 [label="east"];
-  node_10 -> node_30 [label="doorway"];
-  node_31 -> node_18 [label="north"];
-  node_11 -> node_5 [label="north"];
-  node_14 -> node_18 [label="east"];
-  node_31 -> node_31 [label="east"];
-  node_29 -> node_27 [label="west"];
-  node_24 -> node_26 [label="west"];
-  node_7 -> node_25 [label="west"];
-  node_30 -> node_10 [label="south"];
-  node_5 -> node_7 [label="north"];
-  node_28 -> node_10 [label="north"];
-  node_18 -> node_14 [label="west"];
-  node_25 -> node_3 [label="up"];
-  node_13 -> node_15 [label="west"];
-  node_21 -> node_31 [label="west"];
-  node_23 -> node_4 [label="darkness"];
-  node_14 -> node_14 [label="north"];
-  node_20 -> node_20 [label="west"];
-  node_7 -> node_1 [label="east"];
-  node_31 -> node_20 [label="south"];
-  node_26 -> node_17 [label="west"];
-  node_11 -> node_15 [label="east"];
-  node_26 -> node_24 [label="east"];
-  node_4 -> node_29 [label="continue"];
+
+Item: concave coin (2700)
+This coin is slightly rounded, almost like a tiny bowl.  It has seven dots on one side."];
+  node_253 [label="Twisty passages (2422)
+You are in a twisty maze of little passages, all alike."];
+  node_239 [label="Ruins (2463)
+Because it has been so well-protected, this room hardly shows signs of decay.  The walls are covered in elaborate murals and decorated with precious metals and stones.
+
+
+Item: teleporter (2708)
+This small device has a button on it and reads 'teleporter' on the side."];
+  node_222 [label="Falling through the air! (2347)
+As you continue along the bridge, it snaps!  You try to grab the bridge, but it evades your grasp in the darkness.  You are plummeting quickly downward into the chasm..."];
+  node_245 [label="Ruins (2478)
+You find yourself in what was once the living quarters for the complex.  Many smaller rooms which once had walls to divide them now lay in disarray.  There is a staircase up here.
+
+
+Item: blue coin (2704)
+This coin is made of a blue metal.  It has nine dots on one side."];
+  node_229 [label="Rope bridge (2342)
+This rope bridge creaks as you walk along it.  You aren't sure how old it is, or whether it can even support your weight."];
+  node_225 [label="Ruins (2452)
+You are in the once-opulent foyer of a massive ruined complex.  There is a door to the south leading to the overgrowth outside and stairs to the north which lead into a larger hall.
+
+
+Item: red coin (2688)
+This coin is made of a red metal.  It has two dots on one side."];
+  node_233 [label="Dark passage (2437)
+You are in a dark, narrow passage."];
+  node_241 [label="Twisty passages (2402)
+You are in a twisty alike of little passages, all maze.
+
+The east passage appears very dark; you feel likely to be eaten by a Grue."];
+  node_243 [label="Passage (2367)
+You are in a crevise on the west wall of the moss cavern.  A dark passage leads further west.  There is a ladder here which leads down into a smaller, moss-filled cavern below."];
+  node_250 [label="Dark cave (2327)
+This seems to be the mouth of a deep cave.  As you peer north into the darkness, you think you hear the echoes of bats deeper within."];
+  node_247 [label="Dark passage (2432)
+You are in a dark, narrow passage."];
+  node_252 [label="Ruins (2473)
+This seems to be a kitchen; there are brick stoves and shelves along the wall.  Everything here has fallen into disrepair.
+
+
+Item: corroded coin (2692)
+This coin is somewhat corroded.  It has a triangle on one side."];
+  node_249 [label="Dark passage (2427)
+You are in a narrow passage.  There is darkness to the west, but you can barely see a glowing opening to the east."];
+  node_251 [label="Twisty passages (2387)
+You are in a maze of little twisty passages, all alike."];
+  node_227 [label="Ruins (2457)
+You stand in the massive central hall of these ruins.  The walls are crumbling, and vegetation has clearly taken over.  Rooms are attached in all directions.  There is a strange monument in the center of the hall with circular slots and unusual symbols.  It reads:
+
+_ + _ * _^2 + _^3 - _ = 399"];
+  node_240 [label="Twisty passages (2382)
+You are in a twisty maze of little passages, all alike."];
+  node_226 [label="Dark cave (2337)
+The cave acoustics dramatically change as you find yourself at a legde above a large chasm.  There is barely enough light here to notice a rope bridge leading out into the dark emptiness."];
+  node_246 [label="Moss cavern (2352)
+You are standing in a large cavern full of bioluminescent moss.  It must have broken your fall!  The cavern extends to the east and west; at the west end, you think you see a passage leading out of the cavern."];
+  node_237 [label="Moss cavern (2362)
+You are standing in a large cavern full of bioluminescent moss.  The cavern extends to the east.  There is a crevise in the rocks which opens into a passage."];
+  node_228 [label="Twisty passages (2412)
+You are in a maze of twisty little passages, all alike."];
+  node_223 [label="Ruins (2483)
+This was long ago a lavish throne room.  Dried-up fountains and crumbling statues line the walls, and the carved stone throne in the center of the room is falling apart.
+
+
+Item: shiny coin (2696)
+This coin is somehow still quite shiny.  It has a pentagon on one side."];
+  node_234 [label="Twisty passages (2397)
+You are in a little maze of twisty passages, all alike."];
+
+  node_226 -> node_250 [label="south"];
+  node_246 -> node_244 [label="east"];
+  node_240 -> node_238 [label="south"];
+  node_229 -> node_226 [label="back"];
+  node_227 -> node_225 [label="south"];
+  node_237 -> node_246 [label="east"];
+  node_221 -> node_252 [label="down"];
+  node_238 -> node_243 [label="ladder"];
+  node_243 -> node_237 [label="cavern"];
+  node_251 -> node_238 [label="north"];
+  node_237 -> node_243 [label="passage"];
+  node_242 -> node_242 [label="south"];
+  node_236 -> node_236 [label="south"];
+  node_242 -> node_253 [label="east"];
+  node_243 -> node_238 [label="ladder"];
+  node_241 -> node_228 [label="north"];
+  node_238 -> node_234 [label="west"];
+  node_249 -> node_247 [label="west"];
+  node_242 -> node_236 [label="north"];
+  node_235 -> node_231 [label="west"];
+  node_247 -> node_233 [label="west"];
+  node_234 -> node_234 [label="north"];
+  node_247 -> node_249 [label="east"];
+  node_235 -> node_233 [label="east"];
+  node_250 -> node_232 [label="north"];
+  node_227 -> node_245 [label="west"];
+  node_252 -> node_221 [label="up"];
+  node_227 -> node_221 [label="east"];
+  node_241 -> node_251 [label="west"];
+  node_229 -> node_222 [label="continue"];
+  node_242 -> node_238 [label="west"];
+  node_239 -> node_227 [label="south"];
+  node_231 -> node_235 [label="east"];
+  node_253 -> node_240 [label="south"];
+  node_248 -> node_230 [label="north"];
+  node_227 -> node_239 [label="north"];
+  node_246 -> node_237 [label="west"];
+  node_224 -> node_249 [label="continue"];
+  node_230 -> node_248 [label="south"];
+  node_251 -> node_240 [label="south"];
+  node_226 -> node_229 [label="bridge"];
+  node_234 -> node_238 [label="east"];
+  node_236 -> node_240 [label="east"];
+  node_250 -> node_230 [label="south"];
+  node_232 -> node_250 [label="south"];
+  node_228 -> node_238 [label="west"];
+  node_234 -> node_241 [label="south"];
+  node_232 -> node_226 [label="north"];
+  node_245 -> node_223 [label="up"];
+  node_230 -> node_250 [label="doorway"];
+  node_221 -> node_227 [label="west"];
+  node_222 -> node_246 [label="down"];
+  node_238 -> node_251 [label="south"];
+  node_241 -> node_253 [label="east"];
+  node_225 -> node_227 [label="north"];
+  node_233 -> node_247 [label="east"];
+  node_253 -> node_251 [label="north"];
+  node_238 -> node_240 [label="north"];
+  node_238 -> node_242 [label="east"];
+  node_243 -> node_224 [label="darkness"];
+  node_241 -> node_240 [label="south"];
+  node_240 -> node_240 [label="west"];
+  node_231 -> node_225 [label="north"];
+  node_251 -> node_251 [label="east"];
+  node_236 -> node_251 [label="north"];
+  node_224 -> node_243 [label="back"];
+  node_223 -> node_245 [label="down"];
+  node_240 -> node_251 [label="north"];
+  node_249 -> node_224 [label="east"];
+  node_233 -> node_235 [label="west"];
+  node_245 -> node_227 [label="east"];
+  node_225 -> node_231 [label="south"];
+  node_244 -> node_246 [label="west"];
 }

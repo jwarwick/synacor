@@ -1,31 +1,31 @@
 digraph G {
-  node_123 [label="Beach (2498)
+  node_111 [label="Beach (2498)
 This is a sandy beach in a cove on some tropical island.  It is raining.  The ocean is to your south, and heavy foliage is to your north; the beach extends west and east."];
-  node_124 [label="Beach (2503)
+  node_112 [label="Beach (2503)
 This is a sandy beach in a cove on some tropical island.  It is raining.  To your west is an embankment of the cove which looks too steep to climb.  The beach extends to the east, and there is dense foliage to the north.  The ocean to the south seems uninviting."];
-  node_125 [label="Beach (2508)
+  node_113 [label="Beach (2508)
 This is a sandy beach in a cove on some tropical island.  It is raining.  The steep cove embankment to your east blocks your path, and the ocean waters here look unsafe.  The beach extends to the west, and there is dense foliage to the north."];
-  node_126 [label="Tropical Island (2513)
+  node_114 [label="Tropical Island (2513)
 The large trees here seem to be protecting you from the rain.  As you push through the undergrowth, you can hear birds chirping overhead.  There is a steep rock face to your west blocking your path."];
-  node_127 [label="Tropical Island (2518)
+  node_115 [label="Tropical Island (2518)
 The east embankment of the cove towers over you.  It produces a small waterfall here which cascades excitedly into a pool."];
-  node_128 [label="Tropical Island (2523)
+  node_116 [label="Tropical Island (2523)
 The embankment of the cove come toegher here to your east and west.  Between these tall rock faces, there is a narrow, overgrown path leading north.  You hear waves lapping up on a beach through the dense vegetation to your south."];
-  node_129 [label="Tropical Island (2528)
+  node_117 [label="Tropical Island (2528)
 You are on a narrow path between two steep rock faces which look like they have been here for thousands of years.  Rain trickles down through the vegetation and moss, and through the leaves you can occasionally see a sliver of light hundreds of feet above you where the rock walls end."];
-  node_130 [label="Tropical Island (2533)
+  node_118 [label="Tropical Island (2533)
 The narrow path slopes downward to the north and leads to the mouth of a small cave.  A sign nearby reads 'Treasure Vault Access', but different handwriting has crossed this out and written 'Lair of Horrible Monster!  All non-pirates keep out!'."];
-  node_131 [label="Tropical Cave (2538)
+  node_119 [label="Tropical Cave (2538)
 You stand at the entrance to a natural cave which looks like it hasn't been visited in quite some time.  Light pours in through the opening to the south, while fireflies light the path further into the cave to the north."];
-  node_132 [label="Tropical Cave (2543)
+  node_120 [label="Tropical Cave (2543)
 Fireflies slowly drift around you and light the tunnel, which seems to get brighter to the south, but dimmer to the north."];
-  node_133 [label="Tropical Cave (2548)
+  node_121 [label="Tropical Cave (2548)
 The cave is a little wider here.  You find the cobweb-encrusted remains of a small camp, and although you don't suspect the broken pieces of tables and chairs will prove useful to your quest, the fireflies seem to like using the debris as a shelter.  A passageway leads north and south, and there is an alcove to the east."];
-  node_134 [label="Tropical Cave Alcove (2553)
+  node_122 [label="Tropical Cave Alcove (2553)
 At the back of this alcove, there is a small table, a chair, and a broken lantern.  It looks like this space was used much more recently than the camp to the west.
 
 
-Item: journal
+Item: journal (2728)
 Fireflies were using this dusty old journal as a resting spot until you scared them off.  It reads:
 
 Day 1: We have reached what seems to be the final in a series of puzzles guarding an ancient treasure.  I suspect most adventurers give up long before this point, but we're so close!  We must press on!
@@ -51,159 +51,159 @@ Day 55: The fireflies are getting suspicious.  One of them looked at me funny to
 Day 89: Every once in a great while, one of the crewmembers has the same story: that the door flashes white, the hourglass had already run out, it flashes black, and the orb evaporates.  Are we too slow?  We can't seem to find a way to make the orb's weight match what the door wants before the hourglass runs out.  If only we could find a shorter route through the rooms...
 
 Day 144: We are abandoning the mission.  None of us can work out the solution to the puzzle.  I will leave this journal here to help future adventurers, though I am not sure what help it will give.  Good luck!"];
-  node_135 [label="Tropical Cave (2558)
+  node_123 [label="Tropical Cave (2558)
 This tunnel slopes deeper underground to the north, but the fireflies are all around to light your path."];
-  node_136 [label="Vault Lock (2563)
+  node_124 [label="Vault Lock (2563)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting a '*' symbol."];
-  node_137 [label="Vault Lock (2568)
+  node_125 [label="Vault Lock (2568)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting the number '8'."];
-  node_138 [label="Vault Lock (2573)
+  node_126 [label="Vault Lock (2573)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting a '-' symbol."];
-  node_139 [label="Vault Door (2578)
+  node_127 [label="Vault Door (2578)
 You stand before the door to the vault; it has a large '30' carved into it.  Affixed to the wall near the door, there is a running hourglass which never seems to run out of sand.
 
 The floor of this room is a large mosaic depicting the number '1'."];
-  node_140 [label="Vault Lock (2583)
+  node_128 [label="Vault Lock (2583)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting the number '4'."];
-  node_141 [label="Vault Lock (2588)
+  node_129 [label="Vault Lock (2588)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting a '*' symbol."];
-  node_142 [label="Vault Lock (2593)
+  node_130 [label="Vault Lock (2593)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting the number '11'."];
-  node_143 [label="Vault Lock (2598)
+  node_131 [label="Vault Lock (2598)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting a '*' symbol."];
-  node_144 [label="Vault Lock (2603)
+  node_132 [label="Vault Lock (2603)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting a '+' symbol."];
-  node_145 [label="Vault Lock (2608)
+  node_133 [label="Vault Lock (2608)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting the number '4'."];
-  node_146 [label="Vault Lock (2613)
+  node_134 [label="Vault Lock (2613)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting a '-' symbol."];
-  node_147 [label="Vault Lock (2618)
+  node_135 [label="Vault Lock (2618)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting the number '18'."];
-  node_148 [label="Vault Antechamber (2623)
+  node_136 [label="Vault Antechamber (2623)
 You are in the antechamber to a grid of rooms that control the door to the vault.  You notice the number '22' is carved into the orb's pedestal.
 
 
-Item: orb
+Item: orb (2716)
 This is a clear glass sphere about the size of a tennis ball."];
-  node_149 [label="Vault Lock (2628)
+  node_137 [label="Vault Lock (2628)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting a '-' symbol."];
-  node_150 [label="Vault Lock (2633)
+  node_138 [label="Vault Lock (2633)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting the number '9'."];
-  node_151 [label="Vault Lock (2638)
+  node_139 [label="Vault Lock (2638)
 You are in a grid of rooms that control the door to the vault.
 
 The floor of this room is a large mosaic depicting a '*' symbol."];
-  node_152 [label="Vault (2643)
+  node_140 [label="Vault (2643)
 This vault contains incredible riches!  Piles of gold and platinum coins surround you, and the walls are adorned with topazes, rubies, sapphires, emeralds, opals, dilithium crystals, elerium-115, and unobtainium.
 
 
-Item: mirror
+Item: mirror (2720)
 This is a rather mundane hand-held mirror from the otherwise magnificent vault room.  What USE could it possibly have?"];
 
-  node_151 -> node_147 [label="north"];
-  node_143 -> node_147 [label="south"];
-  node_152 -> node_139 [label="leave"];
-  node_127 -> node_125 [label="south"];
-  node_146 -> node_145 [label="west"];
-  node_133 -> node_134 [label="east"];
-  node_135 -> node_133 [label="south"];
-  node_140 -> node_144 [label="south"];
-  node_140 -> node_136 [label="north"];
-  node_123 -> node_125 [label="east"];
-  node_133 -> node_135 [label="north"];
-  node_141 -> node_140 [label="west"];
-  node_149 -> node_145 [label="north"];
-  node_145 -> node_149 [label="south"];
-  node_126 -> node_123 [label="south"];
-  node_146 -> node_142 [label="north"];
-  node_127 -> node_126 [label="west"];
-  node_139 -> node_143 [label="south"];
-  node_142 -> node_146 [label="south"];
-  node_139 -> node_138 [label="west"];
-  node_141 -> node_137 [label="north"];
-  node_126 -> node_127 [label="east"];
-  node_144 -> node_140 [label="north"];
-  node_139 -> node_152 [label="vault"];
-  node_151 -> node_150 [label="west"];
-  node_148 -> node_144 [label="north"];
-  node_132 -> node_131 [label="south"];
-  node_137 -> node_136 [label="west"];
-  node_124 -> node_123 [label="east"];
-  node_148 -> node_149 [label="east"];
-  node_140 -> node_141 [label="east"];
-  node_127 -> node_128 [label="north"];
-  node_131 -> node_132 [label="north"];
-  node_125 -> node_123 [label="west"];
-  node_142 -> node_143 [label="east"];
-  node_133 -> node_132 [label="south"];
-  node_147 -> node_151 [label="south"];
-  node_141 -> node_145 [label="south"];
-  node_135 -> node_148 [label="north"];
-  node_145 -> node_146 [label="east"];
-  node_137 -> node_138 [label="east"];
-  node_150 -> node_149 [label="west"];
-  node_129 -> node_130 [label="north"];
-  node_137 -> node_141 [label="south"];
-  node_149 -> node_150 [label="east"];
-  node_128 -> node_129 [label="north"];
-  node_144 -> node_148 [label="south"];
-  node_138 -> node_137 [label="west"];
-  node_143 -> node_139 [label="north"];
-  node_144 -> node_145 [label="east"];
-  node_147 -> node_143 [label="north"];
-  node_128 -> node_126 [label="south"];
   node_134 -> node_133 [label="west"];
-  node_142 -> node_138 [label="north"];
-  node_142 -> node_141 [label="west"];
-  node_150 -> node_146 [label="north"];
-  node_130 -> node_131 [label="north"];
-  node_131 -> node_130 [label="south"];
-  node_146 -> node_147 [label="east"];
-  node_143 -> node_142 [label="west"];
-  node_136 -> node_140 [label="south"];
-  node_138 -> node_139 [label="east"];
-  node_149 -> node_148 [label="west"];
-  node_130 -> node_129 [label="south"];
-  node_145 -> node_141 [label="north"];
-  node_123 -> node_124 [label="west"];
-  node_145 -> node_144 [label="west"];
-  node_129 -> node_128 [label="south"];
-  node_126 -> node_128 [label="north"];
-  node_124 -> node_126 [label="north"];
-  node_138 -> node_142 [label="south"];
-  node_147 -> node_146 [label="west"];
-  node_146 -> node_150 [label="south"];
-  node_141 -> node_142 [label="east"];
-  node_150 -> node_151 [label="east"];
-  node_148 -> node_135 [label="south"];
-  node_125 -> node_127 [label="north"];
+  node_121 -> node_123 [label="north"];
+  node_138 -> node_137 [label="west"];
+  node_127 -> node_131 [label="south"];
+  node_128 -> node_124 [label="north"];
+  node_132 -> node_128 [label="north"];
+  node_131 -> node_135 [label="south"];
+  node_116 -> node_117 [label="north"];
+  node_126 -> node_130 [label="south"];
+  node_133 -> node_134 [label="east"];
+  node_111 -> node_112 [label="west"];
+  node_137 -> node_133 [label="north"];
+  node_112 -> node_114 [label="north"];
+  node_119 -> node_118 [label="south"];
+  node_137 -> node_136 [label="west"];
+  node_121 -> node_120 [label="south"];
+  node_130 -> node_134 [label="south"];
+  node_134 -> node_130 [label="north"];
+  node_130 -> node_129 [label="west"];
+  node_111 -> node_114 [label="north"];
+  node_132 -> node_133 [label="east"];
+  node_120 -> node_121 [label="north"];
+  node_135 -> node_139 [label="south"];
+  node_131 -> node_127 [label="north"];
+  node_114 -> node_115 [label="east"];
+  node_126 -> node_127 [label="east"];
+  node_129 -> node_133 [label="south"];
+  node_117 -> node_118 [label="north"];
+  node_131 -> node_130 [label="west"];
+  node_120 -> node_119 [label="south"];
+  node_125 -> node_126 [label="east"];
+  node_118 -> node_119 [label="north"];
+  node_115 -> node_113 [label="south"];
+  node_133 -> node_132 [label="west"];
+  node_126 -> node_125 [label="west"];
+  node_139 -> node_138 [label="west"];
+  node_133 -> node_129 [label="north"];
+  node_127 -> node_140 [label="vault"];
+  node_136 -> node_123 [label="south"];
+  node_129 -> node_125 [label="north"];
+  node_123 -> node_136 [label="north"];
+  node_129 -> node_130 [label="east"];
+  node_121 -> node_122 [label="east"];
+  node_136 -> node_132 [label="north"];
+  node_130 -> node_131 [label="east"];
+  node_134 -> node_138 [label="south"];
+  node_135 -> node_134 [label="west"];
+  node_112 -> node_111 [label="east"];
+  node_113 -> node_115 [label="north"];
+  node_139 -> node_135 [label="north"];
+  node_122 -> node_121 [label="west"];
+  node_127 -> node_126 [label="west"];
+  node_133 -> node_137 [label="south"];
+  node_114 -> node_116 [label="north"];
+  node_134 -> node_135 [label="east"];
+  node_113 -> node_111 [label="west"];
+  node_124 -> node_125 [label="east"];
+  node_125 -> node_129 [label="south"];
+  node_138 -> node_134 [label="north"];
+  node_135 -> node_131 [label="north"];
+  node_128 -> node_132 [label="south"];
+  node_129 -> node_128 [label="west"];
+  node_124 -> node_128 [label="south"];
   node_136 -> node_137 [label="east"];
-  node_123 -> node_126 [label="north"];
-  node_132 -> node_133 [label="north"];
+  node_115 -> node_114 [label="west"];
+  node_137 -> node_138 [label="east"];
+  node_123 -> node_121 [label="south"];
+  node_119 -> node_120 [label="north"];
+  node_117 -> node_116 [label="south"];
+  node_130 -> node_126 [label="north"];
+  node_114 -> node_111 [label="south"];
+  node_140 -> node_127 [label="leave"];
+  node_138 -> node_139 [label="east"];
+  node_115 -> node_116 [label="north"];
+  node_132 -> node_136 [label="south"];
+  node_118 -> node_117 [label="south"];
+  node_128 -> node_129 [label="east"];
+  node_111 -> node_113 [label="east"];
+  node_116 -> node_114 [label="south"];
+  node_125 -> node_124 [label="west"];
 }

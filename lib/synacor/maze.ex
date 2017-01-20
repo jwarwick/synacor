@@ -29,6 +29,7 @@ defmodule Synacor.Maze do
   2671 -> ? seems like a function ptr. Maybe the USE behavior?
   """
 
+  use Bitwise
   alias Synacor.Token
   alias Graphvix.{Graph, Node, Edge}
 
@@ -46,6 +47,72 @@ defmodule Synacor.Maze do
   def solve do
     steps = [
       "take tablet",
+      "use tablet",
+      "doorway",
+      "north",
+      "north",
+      "bridge",
+      "continue",
+      "down",
+      "east",
+      "take empty lantern",
+      "west",
+      "west",
+      "passage",
+      "ladder",
+      "west",
+      "south", 
+      "north",
+      "take can",
+      "use can",
+      "use lantern",
+      "look",
+      "west",
+      "ladder",
+      "darkness",
+      "continue",
+      "west",
+      "west",
+      "west",
+      "west",
+      "north",
+      "take red coin",
+      "north",
+      "west",
+      "take blue coin",
+      "up",
+      "take shiny coin",
+      "down",
+      "east",
+      "east",
+      "take concave coin",
+      "down",
+      "take corroded coin",
+      "up",
+      "west",
+      "use blue coin",
+      "use red coin",
+      "use shiny coin",
+      "use concave coin",
+      "use corroded coin",
+      "north",
+      "take teleporter",
+      "use teleporter",
+      "take business card",
+      "take strange book",
+      "look strange book"
+      ]
+
+    steps
+  end
+
+  @doc """
+  Generate a string that will solve the maze, using hacks in the VM
+  """
+  def solve_cheats do
+    steps = [
+      "take tablet",
+      "use tablet",
       "bring 2680",                 # fetch the lit lantern
       "take lit lantern",
       "jump 2452",
@@ -71,8 +138,11 @@ defmodule Synacor.Maze do
       "poke 6031 1",
       "poke 6032 32768",
       "poke 6033 6",
-      "set_register 7 1",          # end disable teleporter confirmation function
-      "use teleporter"
+      "set_register 7 6",          # end disable teleporter confirmation function
+      "use teleporter",
+      "bring 2720",                # fetch the mirror
+      "take mirror",
+      "use mirror"
       ]
 
     steps
@@ -171,7 +241,7 @@ defmodule Synacor.Maze do
   defp item_str(item) do
     desc = String.replace("#{item.description}", ~s("), ~s('))
     name = String.replace("#{item.name}", ~s("), ~s('))
-    "#{name}\n#{desc}"
+    "#{name} (#{inspect item.offset})\n#{desc}"
   end
 
   defp add_map(room = %Room{offset: offset}, acc) do
@@ -291,5 +361,86 @@ defmodule Synacor.Maze do
     op = Token.get_value(offset, bin)
     read_data(cnt-1, offset+1, bin, [op | acc])
   end
+
+  @encrypted_strings [
+    {26851, 16353+5658},
+    {27414, 7734+9395},
+    {27432, 4595+2160},
+    {27455, 23069+8535},
+    {27482, 8104+8912},
+    {27532, 4592+25603},
+    {28037, 432+1484},
+    {28054, 238+5885},
+    {28062, 20833+2578},
+    {28090, 1769+14212},
+    {28100, 27093+5662},
+    {28135, 17703+10555},
+    {28170, 4307+2452},
+    {28204, 11030+2765},
+    {28236, 2352+5191},
+    {28303, 2891+21801},
+    {28347, 286+338},
+    {28369, 10605+12156},
+    {28401, 16785+8685},
+    {28453, 11174+5819},
+    {28510, 53+74},
+    {28569, 898+100},
+    {28595, 3585+6892},
+    {28621, 14379+13501},
+    {28664, 271+13145},
+    {28679, 1298+9300},
+    {28710, 6071+23493},
+    {28777, 2876+15154},
+    {28844, 1475+12831},
+    {29014, 9025+690},
+    {29245, 16808+10433},
+    {29400, 25133+3901},
+    {29545, 8342+18380},
+    {29667, 26729+1158},
+    {29757, 28931+3696},
+    {29946, 14595+4719}
+    ]
+
+  @doc """
+  Decrypt all encrypted strings in the instructions
+  """
+  def decrypt_all_strings(instructions) do
+    for {offset, key} <- @encrypted_strings do
+      str = decrypt(offset, key, instructions)
+      IO.puts "#{IO.ANSI.bright()}[#{inspect offset}]#{IO.ANSI.reset()} : #{inspect str}"
+    end
+    :ok
+  end
+
+  @doc """
+  Decrypt strings
+  """
+  def decrypt(offset, key, instructions) do
+    cnt = Token.get_value(offset, instructions)
+    decrypt_list(cnt, offset, key, instructions, [])
+  end
+
+  defp decrypt_list(0, _, _, _, acc), do: acc
+  defp decrypt_list(cnt, offset, key, instructions, acc) do
+    token = Token.get_value(offset + cnt, instructions)
+    decrypted = decrypt_value(token, key)
+    decrypt_list(cnt - 1, offset, key, instructions, [decrypted | acc])
+  end
+
+  defp decrypt_value(val, key) do
+    r2 = band(val, key)
+    r2 = flip_bits(r2)
+    r0 = bor(val, key)
+    r0 = band(r0, r2)
+    r0
+  end
+
+  defp flip_bits(bin) do
+    <<l::integer-size(15)>> = for <<c::size(1) <- <<bin::integer-size(15)>> >>, into: <<>>, do: flip_bit(c)
+    l
+  end
+
+  defp flip_bit(1), do: <<0::size(1)>>
+  defp flip_bit(0), do: <<1::size(1)>>
 
 end

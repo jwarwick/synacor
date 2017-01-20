@@ -1,0 +1,87 @@
+
+[01531]  {:push, {:reg, 1}}				# decrypt wrapper
+[01533]  {:set, {:reg, 1}, {:reg, 2}}
+[01536]  {:call, {:value, 2125}}
+[01538]  {:out, {:reg, 0}}
+[01540]  {:pop, {:reg, 1}}
+[01542]  {:ret}
+
+r0 holds the value (read from memory) to decrypt
+r2 holds the key
+r1 = r2
+decrypt()
+print r0
+
+
+
+[02125]  {:push, {:reg, 1}}				# decrypt function
+[02127]  {:push, {:reg, 2}}
+[02129]  {:and, {:reg, 2}, {:reg, 0}, {:reg, 1}}
+[02133]  {:not, {:reg, 2}, {:reg, 2}}
+[02136]  {:or, {:reg, 0}, {:reg, 0}, {:reg, 1}}
+[02140]  {:and, {:reg, 0}, {:reg, 0}, {:reg, 2}}
+[02144]  {:pop, {:reg, 2}}
+[02146]  {:pop, {:reg, 1}}
+[02148]  {:ret}
+
+r2 = r0 & r1
+r2 = !r2
+r0 = r0 | r1
+r0 = r0 & r2
+return r0
+
+
+[01841]  {:push, {:reg, 3}}				# Print island teleport code
+[01843]  {:push, {:reg, 4}}
+[01845]  {:push, {:reg, 5}}
+[01847]  {:push, {:reg, 6}}
+[01849]  {:set, {:reg, 6}, {:value, 1}}                         # 
+[01852]  {:add, {:reg, 4}, {:reg, 3}, {:reg, 6}}                # r4 = r3 + 1
+[01856]  {:rmem, {:reg, 4}, {:reg, 4}}                          # r4 = read_memory(r4)
+[01859]  {:add, {:reg, 5}, {:value, 6125}, {:reg, 6}}           # r5 = 6125 + r6
+[01863]  {:wmem, {:reg, 5}, {:reg, 4}}                          # write_mem(r5, r4)
+[01866]  {:add, {:reg, 6}, {:reg, 6}, {:value, 1}}              # r6 = r6 + 1
+[01870]  {:rmem, {:reg, 5}, {:value, 6125}}                     # r5 = read_memory(6125)
+[01873]  {:gt, {:reg, 4}, {:reg, 6}, {:reg, 5}}                 # r4 = r6 > r5
+[01877]  {:jf, {:reg, 4}, {:value, 1852}}                       # if !r4 goto 1852
+[01880]  {:set, {:reg, 3}, {:value, 0}}                         # r3 = 0
+[01883]  {:set, {:reg, 4}, {:value, 0}}                         # r4 = 0
+[01886]  {:rmem, {:reg, 5}, {:value, 6125}}                     # r5 = read_memory(6125)
+[01889]  {:mod, {:reg, 5}, {:reg, 4}, {:reg, 5}}                # r5 = r4 % r5
+[01893]  {:add, {:reg, 5}, {:reg, 5}, {:value, 6125}}           # r5 = r5 + 6125
+[01897]  {:add, {:reg, 5}, {:reg, 5}, {:value, 1}}              # r5 = r5 + 1
+[01901]  {:rmem, {:reg, 6}, {:reg, 5}}                          # r6 = read_memory(r5)
+[01904]  {:mult, {:reg, 6}, {:reg, 6}, {:value, 5249}}          # r6 = r6 * 5249
+[01908]  {:add, {:reg, 6}, {:reg, 6}, {:value, 12345}}          # r6 = r6 + 12345
+[01912]  {:wmem, {:reg, 5}, {:reg, 6}}                          # write_memory(r5, r6)
+[01915]  {:push, {:reg, 0}}
+[01917]  {:push, {:reg, 1}}
+[01919]  {:set, {:reg, 1}, {:reg, 6}}                           # r1 = r6
+[01922]  {:call, {:value, 2125}}                                # r0 = decrypt(r0, r1)
+[01924]  {:set, {:reg, 6}, {:reg, 0}}                           # r6 = r0
+[01927]  {:pop, {:reg, 1}}
+[01929]  {:pop, {:reg, 0}}
+[01931]  {:rmem, {:reg, 5}, {:reg, 1}}                          # r5 = read_memory(r1)
+[01934]  {:mod, {:reg, 6}, {:reg, 6}, {:reg, 5}}                # r6 = r6 % r5
+[01938]  {:add, {:reg, 6}, {:reg, 6}, {:value, 1}}              # r6 = r6 + 1
+[01942]  {:gt, {:reg, 5}, {:reg, 6}, {:reg, 2}}                 # r5 = r6 > r2
+[01946]  {:jt, {:reg, 5}, {:value, 1952}}                       # if r5 goto 1952
+[01949]  {:set, {:reg, 3}, {:value, 1}}                         # r3 = 1
+[01952]  {:add, {:reg, 6}, {:reg, 6}, {:reg, 1}}                # r6 = r6 + r1
+[01956]  {:rmem, {:reg, 6}, {:reg, 6}}                          # r6 = read_memory(r6)
+[01959]  {:add, {:reg, 4}, {:reg, 4}, {:value, 1}}              # r4 = r4 + 1
+[01963]  {:add, {:reg, 5}, {:reg, 4}, {:value, 6129}}           # r5 = r4 + 6129
+[01967]  {:wmem, {:reg, 5}, {:reg, 6}}                          # write_memory(r5, r6)
+[01970]  {:rmem, {:reg, 5}, {:value, 6129}}                     # r5 = read_memory(6129)
+[01973]  {:eq, {:reg, 5}, {:reg, 4}, {:reg, 5}}                 # r5 = r4 == r5
+[01977]  {:jf, {:reg, 5}, {:value, 1886}}                       # if !r5 goto 1886
+[01980]  {:jf, {:reg, 3}, {:value, 1880}}                       # if !r3 goto 1880
+[01983]  {:push, {:reg, 0}}
+[01985]  {:set, {:reg, 0}, {:value, 6129}}                      # r0 = 6129
+[01988]  {:call, {:value, 1518}}                                # call write object
+[01990]  {:pop, {:reg, 0}}
+[01992]  {:pop, {:reg, 6}}
+[01994]  {:pop, {:reg, 5}}
+[01996]  {:pop, {:reg, 4}}
+[01998]  {:pop, {:reg, 3}}
+[02000]  {:ret}

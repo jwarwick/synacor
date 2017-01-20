@@ -293,7 +293,7 @@
 [01527]  {:ret}
 [01528]  {:out, {:reg, 0}}				# write char to output
 [01530]  {:ret}
-[01531]  {:push, {:reg, 1}}
+[01531]  {:push, {:reg, 1}}				# decrypt wrapper
 [01533]  {:set, {:reg, 1}, {:reg, 2}}
 [01536]  {:call, {:value, 2125}}
 [01538]  {:out, {:reg, 0}}
@@ -417,7 +417,7 @@
 [01836]  {:pop, {:reg, 2}}
 [01838]  {:pop, {:reg, 0}}
 [01840]  {:ret}
-[01841]  {:push, {:reg, 3}}
+[01841]  {:push, {:reg, 3}}				# Print island teleport code
 [01843]  {:push, {:reg, 4}}
 [01845]  {:push, {:reg, 5}}
 [01847]  {:push, {:reg, 6}}
@@ -515,7 +515,7 @@
 [02120]  {:pop, {:reg, 1}}
 [02122]  {:pop, {:reg, 0}}
 [02124]  {:ret}
-[02125]  {:push, {:reg, 1}}
+[02125]  {:push, {:reg, 1}}				# decrypt function
 [02127]  {:push, {:reg, 2}}
 [02129]  {:and, {:reg, 2}, {:reg, 0}, {:reg, 1}}
 [02133]  {:not, {:reg, 2}, {:reg, 2}}
@@ -729,7 +729,10 @@
 [02459]  {:unknown, [27085]}
 [02460]  {:unknown, [27090]}
 [02461]  {:halt}
-[02462]  {:gt, {:value, 10425}, {:value, 10431}, {:value, 27107}}
+[02462]  {:halt}
+[02463]  {:unknown, [10425]}
+[02464]  {:unknown, [10431]}
+[02465]  {:unknown, [27107]}
 [02466]  {:unknown, [27109]}
 [02467]  {:unknown, [3893]}
 [02468]  {:unknown, [10605]}
@@ -954,27 +957,27 @@
 [02687]  {:unknown, [4799]}
 [02688]  {:unknown, [18618]}
 [02689]  {:unknown, [18627]}
-[02690]  {:unknown, [32767]}
+[02690]  {:halt}
 [02691]  {:unknown, [5360]}
 [02692]  {:unknown, [18691]}
 [02693]  {:unknown, [18705]}
-[02694]  {:unknown, [32767]}
+[02694]  {:halt}
 [02695]  {:unknown, [5377]}
 [02696]  {:unknown, [18769]}
 [02697]  {:unknown, [18780]}
-[02698]  {:unknown, [32767]}
+[02698]  {:halt}
 [02699]  {:unknown, [5394]}
 [02700]  {:unknown, [18852]}
 [02701]  {:unknown, [18865]}
-[02702]  {:unknown, [32767]}
+[02702]  {:halt}
 [02703]  {:unknown, [5411]}
 [02704]  {:unknown, [18953]}
 [02705]  {:unknown, [18963]}
-[02706]  {:unknown, [32767]}
+[02706]  {:halt}
 [02707]  {:unknown, [5428]}
 [02708]  {:unknown, [19029]}
 [02709]  {:unknown, [19040]}
-[02710]  {:halt}
+[02710]  {:unknown, [32767]}
 [02711]  {:unknown, [5445]}
 [02712]  {:unknown, [19113]}
 [02713]  {:unknown, [19127]}
@@ -996,8 +999,8 @@
 [02729]  {:unknown, [22101]}
 [02730]  {:unknown, [2553]}
 [02731]  {:halt}
-[02732]  {:unknown, [2488]}				# Current room pointer
-[02733]  {:unknown, [2488]}
+[02732]  {:unknown, [2498]}				# Current room pointer
+[02733]  {:unknown, [2498]}
 [02734]  {:push, {:reg, 0}}				# Main loop
 [02736]  {:push, {:reg, 1}}
 [02738]  {:push, {:reg, 2}}
@@ -2074,10 +2077,10 @@
 [05440]  {:pop, {:reg, 1}}
 [05442]  {:pop, {:reg, 0}}
 [05444]  {:ret}
-[05445]  {:push, {:reg, 0}}
+[05445]  {:push, {:reg, 0}}				# Start of teleporter USE function
 [05447]  {:push, {:reg, 1}}
 [05449]  {:push, {:reg, 2}}
-[05451]  {:jf, {:reg, 7}, {:value, 5605}}
+[05451]  {:jf, {:reg, 7}, {:value, 5605}}				# "Test if teleporter has register 7 set to 0"
 [05454]  {:push, {:reg, 0}}
 [05456]  {:push, {:reg, 1}}
 [05458]  {:push, {:reg, 2}}
@@ -2093,10 +2096,10 @@
 [05480]  {:noop}
 [05481]  {:noop}
 [05482]  {:noop}
-[05483]  {:set, {:reg, 0}, {:value, 4}}
+[05483]  {:set, {:reg, 0}, {:value, 4}}				# args for ackerman(4, 1)
 [05486]  {:set, {:reg, 1}, {:value, 1}}
-[05489]  {:call, {:value, 6027}}
-[05491]  {:eq, {:reg, 1}, {:reg, 0}, {:value, 6}}
+[05489]  {:call, {:value, 6027}}				# Call teleporter ackermann function
+[05491]  {:eq, {:reg, 1}, {:reg, 0}, {:value, 6}}				# R0 must be 6 to pass confirmation check
 [05495]  {:jf, {:reg, 1}, {:value, 5579}}
 [05498]  {:push, {:reg, 0}}
 [05500]  {:push, {:reg, 1}}
@@ -2104,16 +2107,16 @@
 [05504]  {:set, {:reg, 0}, {:value, 29014}}
 [05507]  {:set, {:reg, 1}, {:value, 1531}}
 [05510]  {:add, {:reg, 2}, {:value, 9025}, {:value, 690}}
-[05514]  {:call, {:value, 1458}}
+[05514]  {:call, {:value, 1458}}				# Print: `You wake up on a sandy beach...`
 [05516]  {:pop, {:reg, 2}}
 [05518]  {:pop, {:reg, 1}}
 [05520]  {:pop, {:reg, 0}}
-[05522]  {:set, {:reg, 0}, {:reg, 7}}
+[05522]  {:set, {:reg, 0}, {:reg, 7}}				# Put teleporter register in r0
 [05525]  {:set, {:reg, 1}, {:value, 25866}}
 [05528]  {:set, {:reg, 2}, {:value, 32767}}
 [05531]  {:push, {:reg, 3}}
 [05533]  {:set, {:reg, 3}, {:value, 29241}}
-[05536]  {:call, {:value, 1841}}
+[05536]  {:call, {:value, 1841}}				# Print island teleport code
 [05538]  {:pop, {:reg, 3}}
 [05540]  {:push, {:reg, 0}}
 [05542]  {:push, {:reg, 1}}
@@ -2122,15 +2125,15 @@
 [05549]  {:set, {:reg, 1}, {:value, 1531}}
 [05552]  {:add, {:reg, 2}, {:value, 16808}, {:value, 10433}}
 [05556]  {:call, {:value, 1458}}
-[05558]  {:pop, {:reg, 2}}
+[05558]  {:pop, {:reg, 2}}				# Print `It begins to rain` message
 [05560]  {:pop, {:reg, 1}}
 [05562]  {:pop, {:reg, 0}}
-[05564]  {:wmem, {:value, 2732}, {:value, 2498}}
+[05564]  {:wmem, {:value, 2732}, {:value, 2498}}				# Set current room to beach
 [05567]  {:wmem, {:value, 2733}, {:value, 0}}
 [05570]  {:add, {:reg, 1}, {:value, 2708}, {:value, 2}}
-[05574]  {:wmem, {:reg, 1}, {:value, 32767}}
-[05577]  {:jmp, {:value, 5714}}
-[05579]  {:push, {:reg, 0}}
+[05574]  {:wmem, {:reg, 1}, {:value, 32767}}				# Set the location of the teleporter to a non-existant room
+[05577]  {:jmp, {:value, 5714}}				# Jump to return
+[05579]  {:push, {:reg, 0}}				# Target of jump if confirmation function fails
 [05581]  {:push, {:reg, 1}}
 [05583]  {:push, {:reg, 2}}
 [05585]  {:set, {:reg, 0}, {:value, 29400}}
@@ -2140,8 +2143,8 @@
 [05597]  {:pop, {:reg, 2}}
 [05599]  {:pop, {:reg, 1}}
 [05601]  {:pop, {:reg, 0}}
-[05603]  {:jmp, {:value, 5714}}
-[05605]  {:push, {:reg, 0}}
+[05603]  {:jmp, {:value, 5714}}				# Jump to return
+[05605]  {:push, {:reg, 0}}				# Target of jump if teleport register is 0
 [05607]  {:push, {:reg, 1}}
 [05609]  {:push, {:reg, 2}}
 [05611]  {:set, {:reg, 0}, {:value, 29545}}
@@ -2178,7 +2181,7 @@
 [05700]  {:pop, {:reg, 2}}
 [05702]  {:pop, {:reg, 1}}
 [05704]  {:pop, {:reg, 0}}
-[05706]  {:wmem, {:value, 2732}, {:value, 2488}}
+[05706]  {:wmem, {:value, 2732}, {:value, 2488}}				# Set room ptr back to Synacor HQ
 [05709]  {:wmem, {:value, 2733}, {:value, 0}}
 [05712]  {:jmp, {:value, 5714}}
 [05714]  {:pop, {:reg, 2}}
@@ -2308,7 +2311,9 @@
 [06022]  {:pop, {:reg, 2}}
 [06024]  {:pop, {:reg, 1}}
 [06026]  {:ret}
-[06027]  {:jt, {:reg, 0}, {:value, 6035}}
+[06027]  {:ret}				# Teleporter confirmation function
+[06028]  {:unknown, [32768]}
+[06029]  {:unknown, [6035]}
 [06030]  {:add, {:reg, 0}, {:reg, 1}, {:value, 1}}
 [06034]  {:ret}
 [06035]  {:jt, {:reg, 1}, {:value, 6048}}
@@ -2375,19 +2380,19 @@
 [06122]  {:unknown, 'e'}
 [06123]  {:unknown, 't'}
 [06124]  {:unknown, 'e'}
-[06125]  {:pop, {:value, 20850}}
-[06127]  {:unknown, [27557]}
-[06128]  {:unknown, [169]}
-[06129]  {:and, {:value, 101}, {:value, 88}, {:value, 122}}
-[06133]  {:unknown, 't'}
-[06134]  {:unknown, 'q'}
-[06135]  {:unknown, 'S'}
-[06136]  {:unknown, 'A'}
-[06137]  {:unknown, 't'}
-[06138]  {:unknown, 'd'}
-[06139]  {:unknown, 'z'}
-[06140]  {:unknown, 'I'}
-[06141]  {:unknown, 'Y'}
+[06125]  {:pop, {:value, 1248}}
+[06127]  {:unknown, [32717]}
+[06128]  {:unknown, [18224]}
+[06129]  {:and, {:value, 120}, {:value, 79}, {:value, 108}}				# Start of teleporter code
+[06133]  {:unknown, 'y'}
+[06134]  {:unknown, 'L'}
+[06135]  {:unknown, 'e'}
+[06136]  {:unknown, 'D'}
+[06137]  {:unknown, 'Q'}
+[06138]  {:unknown, 'b'}
+[06139]  {:unknown, 'g'}
+[06140]  {:unknown, 'h'}
+[06141]  {:unknown, 'E'}
 [06142]  {:add, {:value, 70}, {:value, 111}, {:value, 111}}
 [06146]  {:unknown, 't'}
 [06147]  {:unknown, 'h'}
@@ -6366,26 +6371,26 @@
 [10371]  {:unknown, 'd'}
 [10372]  {:unknown, 's'}
 [10373]  {:unknown, ':'}
-[10374]  {:mult, {:value, 10}, {:value, 57}, {:value, 32}}
+[10374]  {:mult, {:value, 10}, {:value, 95}, {:value, 32}}
 [10378]  {:unknown, '+'}
 [10379]  {:unknown, ' '}
-[10380]  {:unknown, '2'}
+[10380]  {:unknown, '_'}
 [10381]  {:unknown, ' '}
 [10382]  {:unknown, '*'}
 [10383]  {:unknown, ' '}
-[10384]  {:unknown, '5'}
+[10384]  {:unknown, '_'}
 [10385]  {:unknown, '^'}
 [10386]  {:unknown, '2'}
 [10387]  {:unknown, ' '}
 [10388]  {:unknown, '+'}
 [10389]  {:unknown, ' '}
-[10390]  {:unknown, '7'}
+[10390]  {:unknown, '_'}
 [10391]  {:unknown, '^'}
 [10392]  {:unknown, '3'}
 [10393]  {:unknown, ' '}
 [10394]  {:unknown, '-'}
 [10395]  {:unknown, ' '}
-[10396]  {:unknown, '3'}
+[10396]  {:unknown, '_'}
 [10397]  {:unknown, ' '}
 [10398]  {:unknown, '='}
 [10399]  {:unknown, ' '}
@@ -21335,24 +21340,28 @@
 [25970]  {:pop, {:value, 117}}
 [25972]  {:unknown, 's'}
 [25973]  {:unknown, 'e'}
-[25974]  {:call, {:value, 108}}
+[25974]  {:halt}
+[25975]  {:unknown, 'l'}
 [25976]  {:unknown, 'o'}
 [25977]  {:unknown, 'o'}
 [25978]  {:unknown, 'k'}
-[25979]  {:and, {:value, 115}, {:value, 116}, {:value, 114}}
-[25983]  {:unknown, 'a'}
-[25984]  {:unknown, 'n'}
-[25985]  {:unknown, 'g'}
-[25986]  {:unknown, 'e'}
-[25987]  {:unknown, ' '}
-[25988]  {:unknown, 'b'}
+[25979]  {:unknown, 't'}
+[25980]  {:unknown, 'e'}
+[25981]  {:unknown, 'l'}
+[25982]  {:unknown, 'e'}
+[25983]  {:unknown, 'p'}
+[25984]  {:unknown, 'o'}
+[25985]  {:unknown, 'r'}
+[25986]  {:unknown, 't'}
+[25987]  {:unknown, 'e'}
+[25988]  {:unknown, 'r'}
 [25989]  {:unknown, 'o'}
 [25990]  {:unknown, 'o'}
 [25991]  {:unknown, 'k'}
 [25992]  {:unknown, 'd'}
-[25993]  {:unknown, 'e'}
-[25994]  {:unknown, 'n'}
-[25995]  {:unknown, 't'}
+[25993]  {:halt}
+[25994]  {:halt}
+[25995]  {:halt}
 [25996]  {:halt}
 [25997]  {:halt}
 [25998]  {:halt}
@@ -22354,11 +22363,12 @@
 [27095]  {:gt, {:value, 267}, {:value, 271}, {:value, 275}}
 [27099]  {:unknown, [281]}
 [27100]  {:unknown, [287]}
-[27101]  {:gt, {:value, 9}, {:value, 2}, {:value, 5}}
-[27105]  {:jt, {:value, 3}, {:value, 1}}
-[27108]  {:unknown, [10599]}
-[27109]  {:set, {:value, 2457}, {:value, 2}}
-[27112]  {:unknown, [10750]}
+[27101]  {:gt, {:value, 0}, {:value, 0}, {:value, 0}}
+[27105]  {:halt}
+[27106]  {:halt}
+[27107]  {:set, {:value, 10599}, {:value, 1}}
+[27110]  {:unknown, [2457]}
+[27111]  {:push, {:value, 10750}}
 [27113]  {:unknown, [10755]}
 [27114]  {:push, {:value, 2473}}
 [27116]  {:unknown, [2457]}
@@ -22560,7 +22570,7 @@
 [27410]  {:unknown, [3362]}
 [27411]  {:unknown, [3400]}
 [27412]  {:unknown, [3488]}
-[27413]  {:unknown, [3568]}
+[27413]  {:unknown, [3568]}				# "Ptr to teleporter USE function"
 [27414]  {:call, {:value, 17123}}
 [27416]  {:unknown, [17086]}
 [27417]  {:unknown, [17025]}
@@ -23950,7 +23960,7 @@
 [28841]  {:unknown, [17948]}
 [28842]  {:unknown, [17984]}
 [28843]  {:unknown, [18020]}
-[28844]  {:unknown, [169]}
+[28844]  {:unknown, [169]}				# "Start of encrypted teleporter message"
 [28845]  {:unknown, [14243]}
 [28846]  {:unknown, [14274]}
 [28847]  {:unknown, [14225]}

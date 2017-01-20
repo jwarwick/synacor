@@ -64,13 +64,17 @@ defmodule Synacor.Terminal do
   end
   defp handle_input("load " <> path, state) do
     path
+    |> String.replace("\"", "")
     |> String.trim
     |> Synacor.load
+
+    IO.puts "#{IO.ANSI.white()}#{IO.ANSI.bright()}VM is paused. `cont` to start running.#{IO.ANSI.reset()}"
 
     %State{state | file_base: Path.rootname(path)}
   end
   defp handle_input("save " <> path, state) do
     path
+    |> String.replace("\"", "")
     |> String.trim
     |> Synacor.save
 
@@ -78,6 +82,7 @@ defmodule Synacor.Terminal do
   end
   defp handle_input("dump " <> path, state) do
     path
+    |> String.replace("\"", "")
     |> String.trim
     |> do_dump
 
@@ -135,7 +140,7 @@ defmodule Synacor.Terminal do
     Synacor.ret
     state
   end
-  defp handle_input("up", state) do
+  defp handle_input("stack_up", state) do
     Synacor.up
     state
   end
@@ -190,6 +195,7 @@ defmodule Synacor.Terminal do
 
   defp get_integer(str) do
     str
+    |> String.replace(",", "")
     |> String.trim
     |> String.to_integer
   end
