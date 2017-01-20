@@ -443,4 +443,69 @@ defmodule Synacor.Maze do
   defp flip_bit(1), do: <<0::size(1)>>
   defp flip_bit(0), do: <<1::size(1)>>
 
+
+  # [06027]  {:jt, {:reg, 0}, {:value, 6035}}                      if r0 goto 6035
+  # [06030]  {:add, {:reg, 0}, {:reg, 1}, {:value, 1}}             else r0 = r1+1
+  # [06034]  {:ret}                                                return
+  #
+  # [06035]  {:jt, {:reg, 1}, {:value, 6048}}                      if r1 goto 6048
+  # [06038]  {:add, {:reg, 0}, {:reg, 0}, {:value, 32767}}         else r0 = r0 + 32767
+  # [06042]  {:set, {:reg, 1}, {:reg, 7}}                          r1 = r7
+  # [06045]  {:call, {:value, 6027}}                               call 6027
+  # [06047]  {:ret}                                                return
+  #
+  # [06048]  {:push, {:reg, 0}}                                    store r0
+  # [06050]  {:add, {:reg, 1}, {:reg, 1}, {:value, 32767}}         r1 = r1 + 32767
+  # [06054]  {:call, {:value, 6027}}                               call 6027
+  # [06056]  {:set, {:reg, 1}, {:reg, 0}}                          r1 = r0
+  # [06059]  {:pop, {:reg, 0}}                                     restore r0
+  # [06061]  {:add, {:reg, 0}, {:reg, 0}, {:value, 32767}}         r0 = r0 + 32767
+  # [06065]  {:call, {:value, 6027}}                               call 6027
+  # [06067]  {:ret}                                                return
+
+
+  # [05483]  {:set, {:reg, 0}, {:value, 4}}				# args for ackerman(4, 1)
+  # [05486]  {:set, {:reg, 1}, {:value, 1}}
+  # [05489]  {:call, {:value, 6027}}				# Call teleporter ackermann function
+  # [05491]  {:eq, {:reg, 1}, {:reg, 0}, {:value, 6}}				# R0 must be 6 to pass confirmation check
+  # [05495]  {:jf, {:reg, 1}, {:value, 5579}}
+
+  @doc """
+  Implementation of teleport confirmation algorithm
+  r0 = 4, r1 = 1, r7 = ?
+  Select r7 such that r0 = 6
+  """
+  def teleport_confirmation(r0, r1, r7) do
+    one(r0, r1, r7)
+  end
+
+  defp one(r0, r1, r7) do
+    IO.puts "one: #{inspect {r0, r1, r7}}"
+    if r0 != 0 do
+      two(r0, r1, r7)
+    else
+      _r0 = Integer.mod(r1 + 1, 32768)
+    end
+  end
+
+  defp two(r0, r1, r7) do
+    IO.puts "two: #{inspect {r0, r1, r7}}"
+    if r1 != 0 do
+      three(r0, r1, r7)
+    else
+      r0 = Integer.mod(r0 + 32767, 32768) # r0 = r0 - 1
+      r1 = r7
+      IO.puts "two else branch: #{inspect {r0, r1, r7}}"
+      one(r0, r1, r7)
+    end
+  end
+
+  defp three(r0, r1, r7) do
+    IO.puts "three: #{inspect {r0, r1, r7}}"
+    r1 = Integer.mod(r1 + 32767, 32768) # r1 = r1 - 1
+    r1 = one(r0, r1, r7)
+    r0 = Integer.mod(r0 + 32767, 32768) # r0 = r0 - 1
+    one(r0, r1, r7)
+  end
+
 end
