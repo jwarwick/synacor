@@ -471,6 +471,16 @@ defmodule Synacor.Maze do
   # [05495]  {:jf, {:reg, 1}, {:value, 5579}}
 
   @doc """
+  Search for the right value of r7 to make the function return 6
+  """
+  def teleport_search do
+    for r7 <- 0..32767 do
+      result = teleport_confirmation(4, 1, r7)
+      IO.puts "Found teleport(4, 1, #{inspect r7}) = #{inspect result}"
+    end
+  end
+
+  @doc """
   Implementation of teleport confirmation algorithm
   r0 = 4, r1 = 1, r7 = ?
   Select r7 such that r0 = 6
@@ -479,32 +489,26 @@ defmodule Synacor.Maze do
     one(r0, r1, r7)
   end
 
+  @range 32768
+
+  defp one(0, r1, _), do: Integer.mod(r1 + 1, @range)
+  defp one(1, r1, r7), do: Integer.mod(r1 + 2 + (r7 - 1), @range)
+  # defp one(2, r1, r7), do: Integer.mod(((2*r1)+3)+(2*(r7-1)), @range)
   defp one(r0, r1, r7) do
-    IO.puts "one: #{inspect {r0, r1, r7}}"
-    if r0 != 0 do
-      two(r0, r1, r7)
-    else
-      _r0 = Integer.mod(r1 + 1, 32768)
-    end
+    two(r0, r1, r7)
   end
 
-  defp two(r0, r1, r7) do
-    IO.puts "two: #{inspect {r0, r1, r7}}"
-    if r1 != 0 do
-      three(r0, r1, r7)
-    else
-      r0 = Integer.mod(r0 + 32767, 32768) # r0 = r0 - 1
-      r1 = r7
-      IO.puts "two else branch: #{inspect {r0, r1, r7}}"
-      one(r0, r1, r7)
-    end
+  defp two(r0, 0, r7) do
+    r0 = Integer.mod(r0 + (@range - 1), @range) # r0 = r0 - 1
+    r1 = r7
+    one(r0, r1, r7)
   end
+  defp two(r0, r1, r7), do: three(r0, r1, r7)
 
   defp three(r0, r1, r7) do
-    IO.puts "three: #{inspect {r0, r1, r7}}"
-    r1 = Integer.mod(r1 + 32767, 32768) # r1 = r1 - 1
+    r1 = Integer.mod(r1 + (@range - 1), @range) # r1 = r1 - 1
     r1 = one(r0, r1, r7)
-    r0 = Integer.mod(r0 + 32767, 32768) # r0 = r0 - 1
+    r0 = Integer.mod(r0 + (@range - 1), @range) # r0 = r0 - 1
     one(r0, r1, r7)
   end
 
