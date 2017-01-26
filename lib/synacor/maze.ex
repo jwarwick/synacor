@@ -100,49 +100,12 @@ defmodule Synacor.Maze do
       "use teleporter",
       "take business card",
       "take strange book",
-      "look strange book"
-      ]
-
-    steps
-  end
-
-  @doc """
-  Generate a string that will solve the maze, using hacks in the VM
-  """
-  def solve_cheats do
-    steps = [
-      "take tablet",
-      "use tablet",
-      "bring 2680",                 # fetch the lit lantern
-      "take lit lantern",
-      "jump 2452",
-      "take red coin",
-      "jump 2478",
-      "take blue coin",
-      "jump 2483",
-      "take shiny coin",
-      "jump 2468",
-      "take concave coin",
-      "jump 2473",
-      "take corroded coin",
-      "jump 2463",
-      "take teleporter",
-      "jump 2457",
-      "use teleporter",
-      "take business card",
-      "take strange book",
-      "poke 6027 21",              # disable teleporter confirmation function
-      "poke 6028 21",
-      "poke 6029 21",
-      "poke 6030 21",
-      "poke 6031 1",
-      "poke 6032 32768",
-      "poke 6033 6",
-      "set_register 7 6",          # end disable teleporter confirmation function
-      "use teleporter",
-      "bring 2720",                # fetch the mirror
-      "take mirror",
-      "use mirror"
+      "look strange book",
+      "poke 5489 21",             # disable call to teleport confirmation function
+      "poke 5490 21",
+      "poke 5485 6",              # make the return value 6
+      "set_register 7 25734",
+      "use teleporter"
       ]
 
     steps
@@ -472,18 +435,22 @@ defmodule Synacor.Maze do
 
   @doc """
   Search for the right value of r7 to make the function return 6
+
+  r0 = 4, r1 = 1, r7 = ?
+  Select r7 such that r0 = 6
+  Found r7 = 25734
   """
   def teleport_search do
     for r7 <- 0..32767 do
       result = teleport_confirmation(4, 1, r7)
-      IO.puts "Found teleport(4, 1, #{inspect r7}) = #{inspect result}"
+      if 6 == result do
+        IO.puts "Found teleport(4, 1, #{inspect r7}) = #{inspect result}"
+      end
     end
   end
 
   @doc """
   Implementation of teleport confirmation algorithm
-  r0 = 4, r1 = 1, r7 = ?
-  Select r7 such that r0 = 6
   """
   def teleport_confirmation(r0, r1, r7) do
     one(r0, r1, r7)
@@ -493,7 +460,7 @@ defmodule Synacor.Maze do
 
   defp one(0, r1, _), do: Integer.mod(r1 + 1, @range)
   defp one(1, r1, r7), do: Integer.mod(r1 + 2 + (r7 - 1), @range)
-  # defp one(2, r1, r7), do: Integer.mod(((2*r1)+3)+(2*(r7-1)), @range)
+  defp one(2, r1, r7), do: Integer.mod((r1 + 1) + (r7 * (r1 + 2)), @range)
   defp one(r0, r1, r7) do
     two(r0, r1, r7)
   end
