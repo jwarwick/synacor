@@ -105,7 +105,35 @@ defmodule Synacor.Maze do
       "poke 5490 21",
       "poke 5485 6",              # make the return value 6
       "set_register 7 25734",
-      "use teleporter"
+      "use teleporter",
+      "north",
+      "north",
+      "north",
+      "north",
+      "north",
+      "north",
+      "north",
+      "east",
+      "take journal",
+      "west",
+      "north",
+      "north",
+      "take orb",
+      "north",
+      "east",
+      "east",
+      "north",
+      "west",
+      "south",
+      "east",
+      "east",
+      "west",
+      "north",
+      "north",
+      "east",
+      "vault",
+      "take mirror",
+      "use mirror"
       ]
 
     steps
@@ -478,5 +506,79 @@ defmodule Synacor.Maze do
     r0 = Integer.mod(r0 + (@range - 1), @range) # r0 = r0 - 1
     one(r0, r1, r7)
   end
+
+  # Vault lock room map
+  @vault %{
+    2623 => %{directions: [east: 2628, north: 2603], action: nil, value: 22},
+    2628 => %{directions: [north: 2608, east: 2633], action: :-, value: nil},
+    2608 => %{directions: [south: 2628, north: 2588, east: 2613, west: 2603], action: nil, value: 4},
+    2588 => %{directions: [south: 2608, north: 2568, east: 2593, west: 2583], action: :*, value: nil},
+    2568 => %{directions: [south: 2588, east: 2573, west: 2563], action: nil, value: 8},
+    2563 => %{directions: [east: 2568, south: 2583], action: :*, value: nil},
+    2583 => %{directions: [north: 2563, south: 2603, east: 2588], action: nil, value: 4},
+    2603 => %{directions: [north: 2583, east: 2608], action: :+, value: nil},
+    2573 => %{directions: [west: 2568, south: 2593, east: 2578], action: :-, value: nil},
+    2593 => %{directions: [north: 2573, south: 2613, east: 2598, west: 2588], action: nil, value: 11},
+    2613 => %{directions: [north: 2593, south: 2633, east: 2618, west: 2608], action: :-, value: nil},
+    2633 => %{directions: [north: 2613, east: 2638, west: 2628], action: nil, value: 9},
+    2638 => %{directions: [west: 2633, north: 2618], action: :*, value: nil},
+    2618 => %{directions: [south: 2638, north: 2598, west: 2613], action: nil, value: 18},
+    2598 => %{directions: [south: 2618, north: 2578, west: 2593], action: :*, value: nil},
+    2578 => %{directions: [], action: nil, value: 1}
+  }
+
+  @vault_start 2623
+  @vault_end 2578
+  @vault_target 30
+  @max_path 13
+
+  @doc """
+  Search the vault lock rooms
+  """
+  def search_vault do
+    visit_room(@vault_start, [], MapSet.new, {0, :+})
+  end
+
+  defp visit_room(room_id = @vault_end, path, _visited, state) do
+    room = Map.get(@vault, room_id)
+    {value, _action} = evaluate(state, room.action, room.value)
+    # IO.puts "In final room, value = #{inspect value}"
+    if @vault_target == value do
+      IO.puts "Found path, length: #{length(path)}: #{inspect Enum.reverse(path)}"
+      # {true, Enum.reverse(path)}
+      {false, nil}
+    else
+      {false, nil}
+    end
+  end
+  defp visit_room(room_id, path, visited, state) do
+    room = Map.get(@vault, room_id)
+    # IO.puts "Visiting room: #{inspect room_id} {#{inspect room.value}, #{inspect room.action}} , Path: #{inspect path}, State: #{inspect state}"
+    new_state = evaluate(state, room.action, room.value)
+    visit_neighbors(room_id, room.directions, path, MapSet.put(visited, room_id), new_state)
+  end
+
+  defp visit_neighbors(_room_id, [], _path, _visited, _new_state) do
+    # IO.puts "#{inspect room_id}: no more neighbors"
+    {false, nil}
+  end
+  defp visit_neighbors(room_id, [{dir, neighbor_id} | rest], path, visited, state) do
+    if length(path) >= @max_path do
+      # IO.puts "#{inspect neighbor_id}: already visited"
+      # visit_neighbors(room_id, rest, path, visited, state)
+      {false, nil}
+    else
+      # IO.puts "Going #{inspect dir}"
+      case visit_room(neighbor_id, [dir | path], visited, state) do
+        {true, path} -> {true, path}
+        {false, nil} -> visit_neighbors(room_id, rest, path, visited, state)
+      end
+    end
+  end
+
+  defp evaluate({value, _action}, new_action, nil), do: {value, new_action}
+  defp evaluate({value, :+}, nil, new_value), do: {Integer.mod(value + new_value, @range), nil}
+  defp evaluate({value, :-}, nil, new_value), do: {Integer.mod(value - new_value, @range), nil}
+  defp evaluate({value, :*}, nil, new_value), do: {Integer.mod(value * new_value, @range), nil}
 
 end
